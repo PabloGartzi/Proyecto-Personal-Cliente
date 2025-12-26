@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 
 export const LoginPage = () => {
     const navigate = useNavigate();
-    const [, setCookie] = useCookies(['token', 'rol']);
+    const [, setCookie] = useCookies(['token']);
 
     const handleSubmit = async (ev) => {
         ev.preventDefault();

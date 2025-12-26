@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import '../../css/AdminModalBorrarUsuario.css';
 import { useNavigate } from 'react-router';
+import { LogoutButton } from '../../components/LogoutButton';
+import {jwtDecode} from "jwt-decode";
+import '../../css/AdminModalBorrarUsuario.css';
+
 
 export const AdminDashboard = () => {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [cookies] = useCookies(['token']);
+    const [cookies, setCookie] = useCookies(['token']);
         
     const [ventanaModal, setVentanaModal] = useState(false);
     const [borrarUsuario, setBorrarUsuario] = useState(null);
@@ -60,20 +63,29 @@ export const AdminDashboard = () => {
         // if (!confirm) return;
 
         try {
-        const res = await fetch(`http://localhost:4001/admin/deleteUser/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${cookies.token}`,
-            },
-        });
+            const res = await fetch(`http://localhost:4001/admin/deleteUser/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${cookies.token}`,
+                },
+            });
 
-        if (!res.ok) {
-            throw new Error("Error al eliminar usuario");
-        }
+            if (!res.ok) {
+                throw new Error("Error al eliminar usuario");
+            }
 
-        // Actualizar lista de usuarios después de eliminar
-        setUsers(users.filter(user => user.user_id !== id));
+            // Actualizar lista de usuarios después de eliminar
+            setUsers(users.filter(user => user.user_id !== id));
+            
+            const decoded = jwtDecode(cookies.token);
+            const currentUserId = decoded.uid;
+            if (parseInt(id) === currentUserId) {
+                setCookie('token', '', { path: '/' });
+                alert('Has eliminado tu propio usuario. Debes iniciar sesión de nuevo con otro usuario.');
+                navigate('/login');
+            }
+
         } catch (error) {
             console.error(error);
             alert("No se pudo eliminar el usuario");
@@ -97,6 +109,8 @@ export const AdminDashboard = () => {
     return (
     <div className="admin-dashboard">
     <h2>Panel de Administración</h2>
+    
+    <LogoutButton/>
 
     <div className="admin-create-user">
       <button className="btn-create-user" onClick={handleCreateUser}>
@@ -141,9 +155,9 @@ export const AdminDashboard = () => {
     {ventanaModal && (
     <div className="modal-borrar-usuario">
         <div className="modal">
-        <p>¿Estás seguro que quieres eliminar {borrarUsuario.user_name}?</p>
-        <button onClick={confirmarBorrado}>Sí, eliminar</button>
-        <button onClick={cerrarVentanaModal}>Cancelar</button>
+            <p>¿Estás seguro que quieres eliminar {borrarUsuario.user_name}?</p>
+            <button onClick={confirmarBorrado}>Sí, eliminar</button>
+            <button onClick={cerrarVentanaModal}>Cancelar</button>
         </div>
     </div>
     )}

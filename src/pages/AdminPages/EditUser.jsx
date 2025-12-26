@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useCookies } from 'react-cookie';
+import {jwtDecode} from "jwt-decode";
 
 export const EditUser = () => {
     const { id } = useParams();
-    const [cookies] = useCookies(['token']);
+    const [cookies, setCookie] = useCookies(['token']);
     const [form, setForm] = useState(null);
     const navigate = useNavigate();
     
@@ -48,8 +49,17 @@ export const EditUser = () => {
             });
 
             if (!res.ok) { throw new Error("Error al actualizar usuario") }
-            
+
+            const decoded = jwtDecode(cookies.token);
+            const currentUserId = decoded.uid;
+            if (parseInt(id) === currentUserId) {
+                setCookie('token', '', { path: '/' });
+                setCookie('rol', '', { path: '/' });
+                alert('Has modificado tu propio usuario. Debes iniciar sesión de nuevo.');
+                navigate('/login');
+            } else {
             navigate('/admin/dashboard');
+            }
         
         } catch (error) {
             console.log(error);

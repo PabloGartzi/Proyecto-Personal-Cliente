@@ -6,7 +6,9 @@ import {LoginPage} from "../pages/LoginPage"
 import {AdminDashboard} from "../pages/AdminPages/AdminDashboard"
 import { EditUser } from '../pages/AdminPages/EditUser'
 import { CreateUser } from '../pages/AdminPages/CreateUser'
-//import { LayoutPublic } from '../pages/LayoutPublic'
+import { OfficeDashboard } from '../pages/OfficePages/OfficeDashboard'
+import { CreateWork } from '../pages/OfficePages/CreateWork'
+import { EditWork } from '../pages/OfficePages/EditWork'
 
 export const AppRoutes = () => {
   return (
@@ -17,6 +19,11 @@ export const AppRoutes = () => {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="editUser/:id" element={<EditUser />} />
             <Route path="createUser" element={<CreateUser />} />
+        </Route>
+        <Route path="office" element={<ProtectedRoute allowedRoles={["office"]}><Outlet /></ProtectedRoute>}>
+            <Route path="dashboard" element={<OfficeDashboard />} />
+            <Route path="createWork" element={<CreateWork />} />
+            <Route path="editWork/:id" element={<EditWork />} />
         </Route>
         <Route path='/*' element={<Navigate to={'/'} />} />
     </Routes>
