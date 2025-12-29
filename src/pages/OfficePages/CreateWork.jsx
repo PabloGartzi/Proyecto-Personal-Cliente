@@ -28,7 +28,7 @@ export const CreateWork = () => {
             });
 
             if (!res.ok) {
-                throw new Error("Error al crear usuario");
+                throw new Error("Error al crear trabajo");
             }
             navigate('/office/dashboard');
         } catch (error) {
@@ -38,7 +38,7 @@ export const CreateWork = () => {
     };
     return (
         <div className="edit-user">
-        <h2>Crear usuario nuevo</h2>
+        <h2>Crear trabajo nuevo</h2>
         <form onSubmit={handleSubmit} className="edit-user-form">
             <input type="text" name="job_title" placeholder="Título" required />
             <input type="text" name="job_description" placeholder="Descripción" required />
@@ -48,8 +48,8 @@ export const CreateWork = () => {
                 <option value="completado">completado</option>
             </select>
             <input type="text" name="job_address" placeholder="Dirección" required />
-            <input type="number" name="job_latitude" placeholder="Latitud" required />
-            <input type="number" name="job_longitude" placeholder="Longitud" required />
+            <input type="number" name="job_latitude" placeholder="Latitud" required step="any" min="-90" max="90"/>
+            <input type="number" name="job_longitude" placeholder="Longitud" required step="any" min="-180" max="180"/>
             <input type="email" name="user_email" placeholder="Email del trabajador" required />
             <button type="submit">Guardar cambios</button>
             <button type="button" onClick={() => navigate('/office/dashboard')}>Cancelar</button>

@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router';
 import { LogoutButton } from '../../components/LogoutButton';
 import {jwtDecode} from "jwt-decode";
-import '../../css/AdminModalBorrarUsuario.css';
+import "../../css/ModalBorrar.css"
 
 
 export const AdminDashboard = () => {
@@ -153,7 +153,7 @@ export const AdminDashboard = () => {
         </tbody>
     </table>
     {ventanaModal && (
-    <div className="modal-borrar-usuario">
+    <div className="modal-borrar">
         <div className="modal">
             <p>¿Estás seguro que quieres eliminar {borrarUsuario.user_name}?</p>
             <button onClick={confirmarBorrado}>Sí, eliminar</button>

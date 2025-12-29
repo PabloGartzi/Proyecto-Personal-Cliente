@@ -3,7 +3,8 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router';
 import { LogoutButton } from '../../components/LogoutButton';
 import { jwtDecode } from 'jwt-decode';
-import '../../css/AdminModalBorrarUsuario.css'; // Puedes crear una versión específica para office
+import { WorksMap } from '../WorksMap';
+import '../../css/ModalBorrar.css';
 
 export const OfficeDashboard = () => {
     const navigate = useNavigate();
@@ -85,7 +86,7 @@ export const OfficeDashboard = () => {
 
     useEffect(() => {
         fetchWorks();
-    }, [cookies.token, ]);
+    }, [cookies.token]);
 
     if (loading) return <p>Cargando trabajos...</p>;
     if (error) return <p>{error}</p>;
@@ -142,8 +143,11 @@ export const OfficeDashboard = () => {
                 </tbody>
             </table>
 
+            <h3>Mapa de trabajos</h3>
+            <WorksMap works={works} />
+
             {ventanaModal && (
-                <div className="modal-borrar-usuario">
+                <div className="modal-borrar">
                     <div className="modal">
                         <p>¿Estás seguro que quieres eliminar "{borrarWork.job_title}"?</p>
                         <button onClick={confirmarBorrado}>Sí, eliminar</button>

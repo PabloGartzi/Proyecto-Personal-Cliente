@@ -18,8 +18,6 @@ export const EditWork = () => {
         if (!res.ok) throw new Error('Error al obtener el trabajo');
 
         const data = await res.json();
-        console.log(data)
-        console.log(data.data.job_title,"datossss")
         setForm({
             job_title: data.data.job_title,
             job_description: data.data.job_description,
@@ -81,8 +79,8 @@ export const EditWork = () => {
                 <option value="completado">completado</option>
             </select>
             <input type="text" name="job_address" value={form.job_address} onChange={handleChange} placeholder="Dirección" required />
-            <input type="number" name="job_latitude" value={form.job_latitude} onChange={handleChange} placeholder="Latitud" required />
-            <input type="number" name="job_longitude" value={form.job_longitude} onChange={handleChange} placeholder="Longitud" required />
+            <input type="number" name="job_latitude" value={form.job_latitude} onChange={handleChange} placeholder="Latitud" required step="any" min="-90" max="90"/>
+            <input type="number" name="job_longitude" value={form.job_longitude} onChange={handleChange} placeholder="Longitud" required step="any" min="-180" max="180"/>
             <input type="email" name="user_email" value={form.user_email} onChange={handleChange} placeholder="Email del trabajador" required/>
             
             <button type="submit">Guardar cambios</button>

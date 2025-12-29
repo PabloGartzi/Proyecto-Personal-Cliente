@@ -601,6 +601,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-leaflet/core@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@react-leaflet/core@npm:3.0.0"
+  peerDependencies:
+    leaflet: ^1.9.0
+    react: ^19.0.0
+    react-dom: ^19.0.0
+  checksum: 10c0/1e20f92ea99d378121d7ba57b9571ca3a67a86247729d8cd5726ded26105fcbffbbdf727da34b2ad5976438979819a38c93b94389313abb3ff80ca81632609a6
+  languageName: node
+  linkType: hard
+
 "@rolldown/pluginutils@npm:1.0.0-beta.53":
   version: 1.0.0-beta.53
   resolution: "@rolldown/pluginutils@npm:1.0.0-beta.53"
@@ -1026,9 +1037,11 @@ __metadata:
     eslint-plugin-react-refresh: "npm:^0.4.24"
     globals: "npm:^16.5.0"
     jwt-decode: "npm:^4.0.0"
+    leaflet: "npm:^1.9.4"
     react: "npm:^19.2.0"
     react-cookie: "npm:^8.0.1"
     react-dom: "npm:^19.2.0"
+    react-leaflet: "npm:^5.0.0"
     react-router: "npm:^7.11.0"
     vite: "npm:^7.2.4"
   languageName: unknown
@@ -1735,6 +1748,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"leaflet@npm:^1.9.4":
+  version: 1.9.4
+  resolution: "leaflet@npm:1.9.4"
+  checksum: 10c0/f639441dbb7eb9ae3fcd29ffd7d3508f6c6106892441634b0232fafb9ffb1588b05a8244ec7085de2c98b5ed703894df246898477836cfd0ce5b96d4717b5ca1
+  languageName: node
+  linkType: hard
+
 "levn@npm:^0.4.1":
   version: 0.4.1
   resolution: "levn@npm:0.4.1"
@@ -2114,6 +2134,19 @@ __metadata:
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: 10c0/33977da7a5f1a287936a0c85639fec6ca74f4f15ef1e59a6bc20338fc73dc69555381e211f7a3529b8150a1f71e4225525b41b60b52965bda53ce7d47377ada1
+  languageName: node
+  linkType: hard
+
+"react-leaflet@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "react-leaflet@npm:5.0.0"
+  dependencies:
+    "@react-leaflet/core": "npm:^3.0.0"
+  peerDependencies:
+    leaflet: ^1.9.0
+    react: ^19.0.0
+    react-dom: ^19.0.0
+  checksum: 10c0/f0b6fb797cc2d81bc8cbb54e0cb32aefa689d35ca5f52d203ce3c5a1d14668e51244f10844bd2c88d5cb4aca5eb05bc280794e6d1652727ff9da2358e89d1b86
   languageName: node
   linkType: hard
 
