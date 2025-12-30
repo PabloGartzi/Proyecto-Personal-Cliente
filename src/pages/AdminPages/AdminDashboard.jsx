@@ -141,67 +141,67 @@ export const AdminDashboard = () => {
 
     return (
     <div className="admin-dashboard">
-    <h2>Panel de Administración</h2>
-    
-    <LogoutButton/>
+        <h2>Panel de Administración</h2>
 
-    <h3>Total de usuarios: {totalUsers}</h3>
-    <ul>
-    {usersByRole.map(role => (
-        <li key={role.role_id}>
-        {role.role_name}: {role.total_users}
-        </li>
-    ))}
-    </ul>
-    <div className="admin-create-user">
-      <button className="btn-create-user" onClick={handleCreateUser}>
-        + Crear nuevo usuario
-      </button>
-    </div>
-    <table className="users-table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Rol</th>
-            <th>Activo</th>
-            <th>Creado en</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        {users.length === 0 ? (
-            <tr>
-            <td colSpan="7">No hay usuarios</td>
-            </tr>
-        ) : (
-            users.map(user => (
-            <tr key={user.user_id}>
-                <td>{user.user_id}</td>
-                <td>{user.user_name}</td>
-                <td>{user.user_email}</td>
-                <td>{user.role_name}</td>
-                <td>{user.is_active ? 'Sí' : 'No'}</td>
-                <td>{new Date(user.user_created_at).toLocaleString()}</td>
-                <td>
-                <button onClick={() => handleEdit(user)}>Editar</button>
-                <button onClick={() => abrirVentanaModal(user)}>Eliminar</button>
-                </td>
-            </tr>
-            ))
-        )}
-        </tbody>
-    </table>
-    {ventanaModal && (
-    <div className="modal-borrar">
-        <div className="modal">
-            <p>¿Estás seguro que quieres eliminar {borrarUsuario.user_name}?</p>
-            <button onClick={confirmarBorrado}>Sí, eliminar</button>
-            <button onClick={cerrarVentanaModal}>Cancelar</button>
+        <LogoutButton/>
+
+        <h3>Total de usuarios: {totalUsers}</h3>
+        <ul>
+        {usersByRole.map(role => (
+            <li key={role.role_id}>
+            {role.role_name}: {role.total_users}
+            </li>
+        ))}
+        </ul>
+        <div className="admin-create-user">
+        <button className="btn-create-user" onClick={handleCreateUser}>
+            + Crear nuevo usuario
+        </button>
         </div>
-    </div>
-    )}
+        <table className="users-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Activo</th>
+                <th>Creado en</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            {users.length === 0 ? (
+                <tr>
+                <td colSpan="7">No hay usuarios</td>
+                </tr>
+            ) : (
+                users.map(user => (
+                <tr key={user.user_id}>
+                    <td>{user.user_id}</td>
+                    <td>{user.user_name}</td>
+                    <td>{user.user_email}</td>
+                    <td>{user.role_name}</td>
+                    <td>{user.is_active ? 'Sí' : 'No'}</td>
+                    <td>{new Date(user.user_created_at).toLocaleString()}</td>
+                    <td>
+                    <button onClick={() => handleEdit(user)}>Editar</button>
+                    <button onClick={() => abrirVentanaModal(user)}>Eliminar</button>
+                    </td>
+                </tr>
+                ))
+            )}
+            </tbody>
+        </table>
+        {ventanaModal && (
+        <div className="modal-borrar">
+            <div className="modal">
+                <p>¿Estás seguro que quieres eliminar {borrarUsuario.user_name}?</p>
+                <button onClick={confirmarBorrado}>Sí, eliminar</button>
+                <button onClick={cerrarVentanaModal}>Cancelar</button>
+            </div>
+        </div>
+        )}
     </div>
 );
 };

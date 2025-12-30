@@ -13,6 +13,11 @@ export const OfficeDashboard = () => {
     const [error, setError] = useState(null);
     const [cookies] = useCookies(['token']);
 
+    const [totalWorks, setTotalWorks] = useState(0);
+    const [worksPending, setWorksPending] = useState(0);
+    const [worksInProgress, setWorksInProgress] = useState(0);
+    const [worksCompleted, setWorksCompleted] = useState(0);
+
     const [ventanaModal, setVentanaModal] = useState(false);
     const [borrarWork, setBorrarWork] = useState(null);
 
@@ -31,6 +36,35 @@ export const OfficeDashboard = () => {
         if (!borrarWork) return;
         await handleDelete(borrarWork.job_id);
         cerrarVentanaModal();
+    };
+
+    const fetchStatistics = async () => {
+        try {
+        const res = await fetch('http://localhost:4001/office/statistics', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${cookies.token}`,
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error('Error al obtener usuarios');
+        }
+
+        const data = await res.json();
+        
+        setTotalWorks(data.data.total_works)
+        setWorksPending(data.data.works_pending)
+        setWorksInProgress(data.data.works_in_progress)
+        setWorksCompleted(data.data.works_completed)
+
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Fetch de todos los trabajos
@@ -75,6 +109,8 @@ export const OfficeDashboard = () => {
             }
 
             setWorks(prev => prev.filter(work => work.job_id !== id));
+            fetchStatistics();
+
         } catch (err) {
             console.error(err);
             alert(err.message);
@@ -91,6 +127,7 @@ export const OfficeDashboard = () => {
 
     useEffect(() => {
         fetchWorks();
+        fetchStatistics();
     }, [cookies.token]);
 
     if (loading) return <p>Cargando trabajos...</p>;
@@ -101,6 +138,12 @@ export const OfficeDashboard = () => {
             <h2>Panel de Oficina</h2>
             <LogoutButton />
 
+            <div className="office-statistics">
+                <p>Total de trabajos: {totalWorks}</p>
+                <p>Trabajos pendientes: {worksPending}</p>
+                <p>Trabajos en curso: {worksInProgress}</p>
+                <p>Trabajos completados: {worksCompleted}</p>
+            </div>
             <div className="office-create-work">
                 <button className="btn-create-work" onClick={handleCreateWork}>
                     + Crear nuevo trabajo
