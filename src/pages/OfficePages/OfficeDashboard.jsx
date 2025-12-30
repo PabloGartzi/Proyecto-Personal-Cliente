@@ -43,10 +43,13 @@ export const OfficeDashboard = () => {
                 },
             });
 
-            if (!res.ok) throw new Error('Error al obtener los trabajos');
-
             const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+
             setWorks(data.data);
+
         } catch (error) {
             console.error(error);
             setError(error);
@@ -66,9 +69,11 @@ export const OfficeDashboard = () => {
                 },
             });
 
-            if (!res.ok) throw new Error('No se pudo eliminar el trabajo');
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
 
-            // Actualizar la lista local
             setWorks(prev => prev.filter(work => work.job_id !== id));
         } catch (err) {
             console.error(err);

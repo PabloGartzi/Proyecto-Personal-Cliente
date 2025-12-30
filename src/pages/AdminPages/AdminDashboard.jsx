@@ -12,6 +12,8 @@ export const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [cookies, setCookie] = useCookies(['token']);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [usersByRole, setUsersByRole] = useState([]);
         
     const [ventanaModal, setVentanaModal] = useState(false);
     const [borrarUsuario, setBorrarUsuario] = useState(null);
@@ -33,9 +35,9 @@ export const AdminDashboard = () => {
     };
 
 
-    const fetchUsers = async () => {
+    const fetchStatistics = async () => {
         try {
-        const res = await fetch('http://localhost:4001/admin/dashboard', {
+        const res = await fetch('http://localhost:4001/admin/statistics', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,6 +50,34 @@ export const AdminDashboard = () => {
         }
 
         const data = await res.json();
+        
+        setTotalUsers(data.data.total_users);
+        setUsersByRole(data.data.users_by_role);
+
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchUsers = async () => {
+        try {
+        const res = await fetch('http://localhost:4001/admin/dashboard', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${cookies.token}`,
+            },
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) {
+            throw new Error(data.msg);
+        }
+
         setUsers(data.data);
 
         } catch (error) {
@@ -71,8 +101,9 @@ export const AdminDashboard = () => {
                 },
             });
 
+            const data = await res.json();
             if (!res.ok) {
-                throw new Error("Error al eliminar usuario");
+                throw new Error(data.msg);
             }
 
             // Actualizar lista de usuarios después de eliminar
@@ -85,6 +116,7 @@ export const AdminDashboard = () => {
                 alert('Has eliminado tu propio usuario. Debes iniciar sesión de nuevo con otro usuario.');
                 navigate('/login');
             }
+            fetchStatistics();
 
         } catch (error) {
             console.error(error);
@@ -101,6 +133,7 @@ export const AdminDashboard = () => {
 
     useEffect(() => {
         fetchUsers();
+        fetchStatistics()
     }, [cookies.token]);
 
     if (loading) return <p>Cargando usuarios...</p>;
@@ -112,6 +145,14 @@ export const AdminDashboard = () => {
     
     <LogoutButton/>
 
+    <h3>Total de usuarios: {totalUsers}</h3>
+    <ul>
+    {usersByRole.map(role => (
+        <li key={role.role_id}>
+        {role.role_name}: {role.total_users}
+        </li>
+    ))}
+    </ul>
     <div className="admin-create-user">
       <button className="btn-create-user" onClick={handleCreateUser}>
         + Crear nuevo usuario

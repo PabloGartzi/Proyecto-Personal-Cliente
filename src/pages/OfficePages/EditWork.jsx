@@ -15,9 +15,11 @@ export const EditWork = () => {
             headers: { Authorization: `Bearer ${cookies.token}` }
         });
 
-        if (!res.ok) throw new Error('Error al obtener el trabajo');
-
         const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.msg);
+        }
+        
         setForm({
             job_title: data.data.job_title,
             job_description: data.data.job_description,
@@ -43,21 +45,24 @@ export const EditWork = () => {
         if (!form) return;
 
         try {
-        const res = await fetch(`http://localhost:4001/office/updateWork/${id}`, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${cookies.token}`
-            },
-            body: JSON.stringify(form)
-        });
+            const res = await fetch(`http://localhost:4001/office/updateWork/${id}`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${cookies.token}`
+                },
+                body: JSON.stringify(form)
+            });
 
-        if (!res.ok) throw new Error('Error al actualizar el trabajo');
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            navigate('/office/dashboard');
 
-        navigate('/office/dashboard');
         } catch (error) {
-        console.log(error);
-        alert(error);
+            console.log(error);
+            alert(error);
         }
     };
     

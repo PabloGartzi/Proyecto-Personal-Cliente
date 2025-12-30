@@ -26,9 +26,9 @@ export const CreateWork = () => {
                 body: JSON.stringify({ job_title, job_description, job_status, job_address, job_latitude, job_longitude, user_email}),
                 credentials: 'include'
             });
-
+            const data = await res.json();
             if (!res.ok) {
-                throw new Error("Error al crear trabajo");
+                throw new Error(data.msg);
             }
             navigate('/office/dashboard');
         } catch (error) {

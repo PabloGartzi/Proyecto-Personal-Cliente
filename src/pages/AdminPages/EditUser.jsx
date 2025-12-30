@@ -14,10 +14,12 @@ export const EditUser = () => {
             const res = await fetch(`http://localhost:4001/admin/dashboard/${id}`, {
                 headers: { Authorization: `Bearer ${cookies.token}` }
             });
-
-            if (!res.ok) { throw new Error("Error al obtener usuario") }
-
             const data = await res.json();
+            
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+
             setForm({
                 user_name: data.data.user_name,
                 user_email: data.data.user_email,
@@ -48,7 +50,10 @@ export const EditUser = () => {
                 })
             });
 
-            if (!res.ok) { throw new Error("Error al actualizar usuario") }
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
 
             const decoded = jwtDecode(cookies.token);
             const currentUserId = decoded.uid;
@@ -58,7 +63,7 @@ export const EditUser = () => {
                 alert('Has modificado tu propio usuario. Debes iniciar sesión de nuevo.');
                 navigate('/login');
             } else {
-            navigate('/admin/dashboard');
+                navigate('/admin/dashboard');
             }
         
         } catch (error) {

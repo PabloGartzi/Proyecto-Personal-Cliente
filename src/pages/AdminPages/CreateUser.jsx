@@ -25,8 +25,9 @@ export const CreateUser = () => {
                 credentials: 'include'
             });
 
+            const data = await res.json();
             if (!res.ok) {
-                throw new Error("Error al crear usuario");
+                throw new Error(data.msg);
             }
             navigate('/admin/dashboard');
         } catch (error) {

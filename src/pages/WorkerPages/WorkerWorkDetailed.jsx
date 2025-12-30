@@ -22,11 +22,11 @@ export const WorkerWorkDetailed = () => {
                 }
             );
 
-            if (!res.ok) {
-                throw new Error('No tienes acceso a este trabajo');
-            }
-
             const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            
             setWork(data.data);
         } catch (error) {
             console.error(error);
@@ -56,8 +56,9 @@ export const WorkerWorkDetailed = () => {
                 }
             );
 
+            const data = await res.json();
             if (!res.ok) {
-                throw new Error('No se pudo actualizar el estado');
+                throw new Error(data.msg);
             }
             navigate('/worker/dashboard');
 

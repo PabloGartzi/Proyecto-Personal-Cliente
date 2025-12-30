@@ -25,11 +25,11 @@ export const WorkerDashboard = () => {
             },
         });
 
-        if (!res.ok) {
-            throw new Error('Error al obtener los trabajos asignados');
-        }
-
         const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.msg);
+        }
+        
         setWorks(data.data);
 
         } catch (error) {
