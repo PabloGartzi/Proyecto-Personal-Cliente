@@ -36,9 +36,9 @@ export const CreateUser = () => {
         }
     };
     return (
-        <div className="edit-user">
+        <div className="create-user">
         <h2>Crear usuario nuevo</h2>
-        <form onSubmit={handleSubmit} className="edit-user-form">
+        <form onSubmit={handleSubmit} className="create-user-form">
             <input type="text" name="user_name" placeholder="Nombre" required />
             <input type="email" name="user_email" placeholder="Email" required />
             <input type="password" name="password" placeholder="Nueva contraseña" />

@@ -13,6 +13,8 @@ import { EditWork } from '../pages/OfficePages/EditWork'
 
 import { WorkerDashboard } from '../pages/WorkerPages/WorkerDashboard'
 import { WorkerWorkDetailed } from '../pages/WorkerPages/WorkerWorkDetailed'
+import { CreateReport } from '../pages/WorkerPages/CreateReport'
+import { EditReport } from '../pages/WorkerPages/EditReport'
 
 export const AppRoutes = () => {
   return (
@@ -34,7 +36,8 @@ export const AppRoutes = () => {
         <Route path="worker" element={<ProtectedRoute allowedRoles={["worker"]}><Outlet /></ProtectedRoute>}>
             <Route path="dashboard" element={<WorkerDashboard />} />
             <Route path="work" element={<WorkerWorkDetailed />} />
-            {/* <Route path="updateWork" element={<EditWork />} /> */}
+            <Route path="createReport" element={<CreateReport />} />
+            <Route path="editReport/:report_id" element={<EditReport />} />
         </Route>
         <Route path='/*' element={<Navigate to={'/'} />} />
     </Routes>

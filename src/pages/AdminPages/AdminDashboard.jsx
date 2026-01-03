@@ -9,7 +9,8 @@ import "../../css/ModalBorrar.css"
 export const AdminDashboard = () => {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loadingUsers, setLoadingUsers] = useState(true);
+    const [loadingStats, setLoadingStats] = useState(true);
     const [error, setError] = useState(null);
     const [cookies, setCookie] = useCookies(['token']);
     const [totalUsers, setTotalUsers] = useState(0);
@@ -58,7 +59,7 @@ export const AdminDashboard = () => {
             console.error(error);
             setError(error);
         } finally {
-            setLoading(false);
+            setLoadingStats(false);
         }
     };
 
@@ -84,7 +85,7 @@ export const AdminDashboard = () => {
             console.error(error);
             setError(error);
         } finally {
-            setLoading(false);
+            setLoadingUsers(false);
         }
     };
 
@@ -136,7 +137,7 @@ export const AdminDashboard = () => {
         fetchStatistics()
     }, [cookies.token]);
 
-    if (loading) return <p>Cargando usuarios...</p>;
+    if (loadingUsers || loadingStats) return <p>Cargando usuarios...</p>;
     if (error) return <p>{error}</p>;
 
     return (

@@ -9,7 +9,9 @@ import '../../css/ModalBorrar.css';
 export const OfficeDashboard = () => {
     const navigate = useNavigate();
     const [works, setWorks] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loadingWorks, setLoadingWorks] = useState(true);
+    const [loadingStats, setLoadingStats] = useState(true);
+
     const [error, setError] = useState(null);
     const [cookies] = useCookies(['token']);
 
@@ -63,7 +65,7 @@ export const OfficeDashboard = () => {
             console.error(error);
             setError(error);
         } finally {
-            setLoading(false);
+            setLoadingStats(false);
         }
     };
 
@@ -88,7 +90,7 @@ export const OfficeDashboard = () => {
             console.error(error);
             setError(error);
         } finally {
-            setLoading(false);
+            setLoadingWorks(false);
         }
     };
 
@@ -125,12 +127,46 @@ export const OfficeDashboard = () => {
         navigate('/office/createWork');
     };
 
+    const handleReports = async (id) => {
+        try {
+            const res = await fetch(
+                `http://localhost:4001/worker/workReport/${id}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${cookies.token}`,
+                    },
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            
+            const blob = await res.blob();// Convertimos la respuesta en un Blob
+            const url = window.URL.createObjectURL(blob); // Creamos una URL temporal
+            const a = document.createElement("a");// Creamos un enlace para descargar el pdf de la url que hemos creado
+            a.href = url;
+            a.download = `reportes_trabajo_${id}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();// Borramos en elnace una vez lo hemos usado para descargar el pdf
+            window.URL.revokeObjectURL(url);
+            // navigate('/worker/dashboard');
+
+        } catch (error) {
+            console.log("ERROR:", error)
+            alert(error);
+        }
+    };
+
     useEffect(() => {
         fetchWorks();
         fetchStatistics();
     }, [cookies.token]);
 
-    if (loading) return <p>Cargando trabajos...</p>;
+    if (loadingWorks || loadingStats) return <p>Cargando trabajos...</p>;
     if (error) return <p>{error}</p>;
 
     return (
@@ -184,6 +220,7 @@ export const OfficeDashboard = () => {
                                 <td>
                                     <button onClick={() => handleEdit(work)}>Editar</button>
                                     <button onClick={() => abrirVentanaModal(work)}>Eliminar</button>
+                                    <button onClick={() => handleReports(work.job_id)}>Descargar Reportes</button>
                                 </td>
                             </tr>
                         ))

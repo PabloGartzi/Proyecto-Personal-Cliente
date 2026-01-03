@@ -48,7 +48,7 @@ export const WorkerDashboard = () => {
                 jobId: work.job_id
             }
         });
-};
+    };
 
 
     useEffect(() => {
