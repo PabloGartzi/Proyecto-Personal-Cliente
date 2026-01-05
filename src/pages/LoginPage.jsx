@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router';
 import React from 'react';
 import { jwtDecode } from "jwt-decode";
 import { useCookies } from 'react-cookie';
+import '../css/LoginPage.css';
 
 export const LoginPage = () => {
     const navigate = useNavigate();
@@ -54,7 +55,7 @@ export const LoginPage = () => {
     };
 
     return (
-        <>
+        <div className='loginWrapper'>
             <h2 className="tituloApp">Airflow - Login</h2>
 
             <form className="formLogin" onSubmit={handleSubmit}>
@@ -66,6 +67,6 @@ export const LoginPage = () => {
 
                 <button type="submit" className="btn">Log in</button>
             </form>
-        </>
+        </div>
     );
 };

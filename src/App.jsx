@@ -10,11 +10,7 @@ function App() {
   const [count, setCount] = useState(0)
   return (
     <UserProvider>
-      <div className='container pt-3'>
-        <p className='h1'>Front APP</p>
-        <hr />
         <AppRoutes/>
-      </div>
     </UserProvider>
   )
 }
