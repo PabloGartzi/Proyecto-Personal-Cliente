@@ -3,12 +3,16 @@ import { useNavigate, useParams } from 'react-router';
 import { useCookies } from 'react-cookie';
 import {jwtDecode} from "jwt-decode";
 import "../../css/EditReport.css";
+import "../../css/ModalErrorReporte.css"
 
 export const EditReport = () => {
     const { report_id } = useParams();
     const [cookies] = useCookies(['token']);
     const [form, setForm] = useState(null);
     const navigate = useNavigate();
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
 
     // Traer los datos del reporte
     const fetchReport = async () => {
@@ -44,7 +48,7 @@ export const EditReport = () => {
         const uid = decoded.uid;
         try {
             const formData = new FormData(ev.target); //Formulario (El texto que meta el worker y la imágen)
-            const res = await fetch(`http://localhost:4001/worker/updateReport/${report_id}/${uid}/`, {
+            const res = await fetch(`http://localhost:4001/worker/updateReport/${report_id}/${uid}`, {
                 method: 'POST',
                 headers: {
                 Authorization: `Bearer ${cookies.token}`
@@ -53,6 +57,11 @@ export const EditReport = () => {
             });
 
             const data = await res.json();
+            if (res.status === 403) {
+                setPopupMessage("No eres el propietario de este informe");
+                setShowPopup(true);
+                return;
+            }
             if (!res.ok) {
                 throw new Error(data.msg);
             }
@@ -92,6 +101,15 @@ export const EditReport = () => {
             <button type="submit">Guardar cambios</button>
             <button type="button" onClick={() => navigate('/worker/dashboard')}> Cancelar </button>
         </form>
+        {showPopup && (
+            <div className="popup-overlay">
+                <div className="popup">
+                    <h3>Acción no permitida</h3>
+                    <p>{popupMessage}</p>
+                    <button onClick={() => setShowPopup(false)}>Cerrar</button>
+                </div>
+            </div>
+        )}
         </div>
     );
 };

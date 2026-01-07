@@ -1,8 +1,10 @@
 import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import {jwtDecode} from "jwt-decode";
 import "../../css/ModalBorrar.css"
 import "../../css/WorkerWorkDetailed.css"
+import "../../css/ModalErrorReporte.css"
 
 export const WorkerWorkDetailed = () => {
     const { state } = useLocation();
@@ -18,6 +20,10 @@ export const WorkerWorkDetailed = () => {
 
     const [ventanaModal, setVentanaModal] = useState(false);
     const [borrarReporte, setBorrarReporte] = useState(null);
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
+
 
 // VENTANA MODAL PARA ELIMINAR REPORTES
     const abrirVentanaModal = (report) => {
@@ -162,9 +168,10 @@ export const WorkerWorkDetailed = () => {
     const handleDelete = async (id) => {
         // const confirm = window.confirm("¿Estás seguro que quieres eliminar este usuario?");
         // if (!confirm) return;
-
+        const decoded = jwtDecode(cookies.token);
+        const uid = decoded.uid;
         try {
-            const res = await fetch(`http://localhost:4001/worker/deleteReport/${id}`, {
+            const res = await fetch(`http://localhost:4001/worker/deleteReport/${id}/${uid}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -173,13 +180,18 @@ export const WorkerWorkDetailed = () => {
             });
 
             const data = await res.json();
+            if (res.status === 403) {
+                setPopupMessage("No eres el propietario de este informe");
+                setShowPopup(true);
+                return;
+            }
             if (!res.ok) {
                 throw new Error(data.msg);
             }
             setReports(reports.filter(report => report.report_id !== id));
         } catch (error) {
             console.error(error);
-            alert("No se pudo eliminar el usuario");
+            alert(error);
         }
     };
 
@@ -258,7 +270,7 @@ export const WorkerWorkDetailed = () => {
                 <tbody>
                     {reports.length === 0 ? (
                         <tr>
-                            <td colSpan="10">No hay trabajos</td>
+                            <td colSpan="10">No hay reportes</td>
                         </tr>
                     ) : (reports.map(report => (
                             <tr key={report.report_id}>
@@ -289,6 +301,16 @@ export const WorkerWorkDetailed = () => {
                         <p>¿Estás seguro que quieres eliminar el reporte {borrarReporte.report_id}?</p>
                         <button onClick={confirmarBorrado}>Sí, eliminar</button>
                         <button onClick={cerrarVentanaModal}>Cancelar</button>
+                    </div>
+                </div>
+            )}
+
+            {showPopup && (
+                <div className="popup-overlay">
+                    <div className="popup">
+                        <h3>Acción no permitida</h3>
+                        <p>{popupMessage}</p>
+                        <button onClick={() => setShowPopup(false)}>Cerrar</button>
                     </div>
                 </div>
             )}
