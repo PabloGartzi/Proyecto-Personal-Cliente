@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import "../../css/ModalBorrar.css"
+import "../../css/WorkerWorkDetailed.css"
 
 export const WorkerWorkDetailed = () => {
     const { state } = useLocation();
@@ -204,7 +205,7 @@ export const WorkerWorkDetailed = () => {
     return (
         <div className="worker-work-detail">
             <h2>Detalle del trabajo</h2>
-            <table className="works-table">
+            <table className="work-table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -219,14 +220,14 @@ export const WorkerWorkDetailed = () => {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{work.job_id}</td>
-                        <td>{work.job_title}</td>
-                        <td>{work.job_description}</td>
-                        <td>{work.job_status}</td>
-                        <td>{work.job_address}</td>
-                        <td>{work.job_latitude}</td>
-                        <td>{work.job_longitude}</td>
-                        <td>{new Date(work.job_created_at).toLocaleString()}</td>
+                        <td data-label="ID">{work.job_id}</td>
+                        <td data-label="Título">{work.job_title}</td>
+                        <td data-label="Descripción">{work.job_description}</td>
+                        <td data-label="Estado">{work.job_status}</td>
+                        <td data-label="Dirección">{work.job_address}</td>
+                        <td data-label="Latitud">{work.job_latitude}</td>
+                        <td data-label="Longitud">{work.job_longitude}</td>
+                        <td data-label="Creado en">{new Date(work.job_created_at).toLocaleString()}</td>
                     </tr>
                 </tbody>
             </table>
@@ -234,7 +235,7 @@ export const WorkerWorkDetailed = () => {
             <hr />
             <div className="update-status">
                 <h3>Actualizar estado</h3>
-                <form onSubmit={handleSubmit} className="edit-work">
+                <form onSubmit={handleSubmit} className="update-work">
                     <select name="job_status" value={work.job_status} onChange={handleChange} required>
                         <option value="pendiente">pendiente</option>
                         <option value="en curso">en curso</option>
@@ -261,13 +262,13 @@ export const WorkerWorkDetailed = () => {
                         </tr>
                     ) : (reports.map(report => (
                             <tr key={report.report_id}>
-                                <td>{report.report_id}</td>
-                                <td>{report.worker_user_id}</td>
-                                <td>{report.report_notes}</td>
-                                <td>{report.report_created_at}</td>
-                                <td>
-                                    <button onClick={() => abrirVentanaModal(report)}>Eliminar</button>
+                                <td data-label="ID reporte">{report.report_id}</td>
+                                <td data-label="ID trabajador">{report.worker_user_id}</td>
+                                <td data-label="Notas">{report.report_notes}</td>
+                                <td data-label="Fecha">{report.report_created_at}</td>
+                                <td data-label="Acciones">
                                     <button onClick={() => handleEdit(report)}>Editar reporte</button>
+                                    <button onClick={() => abrirVentanaModal(report)}>Eliminar</button>
                                 </td>
                             </tr>
                         ))
@@ -278,7 +279,8 @@ export const WorkerWorkDetailed = () => {
                 <h3>Descargar reportes</h3>
                 <button onClick={() => handleReports(work.job_id)}>Descargar reportes</button>
             </div>
-            <div className="download-reports">
+            <div className="create-new-report">
+                <h3>Crear nuevo reporte</h3>
                 <button className="btn-create-report" onClick={() => handleCreateReport(work)}>+ Crear nuevo informe </button>
             </div>
             {ventanaModal && (

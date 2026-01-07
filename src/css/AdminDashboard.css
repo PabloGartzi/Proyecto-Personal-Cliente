@@ -1,0 +1,228 @@
+/* =========================
+   AdminDashboard.css
+   ========================= */
+
+.admin-dashboard {
+    min-height: 100vh;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #eaeaea;
+}
+
+.admin-dashboard h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.admin-dashboard h3 {
+    margin: 1rem 0;
+    font-weight: 500;
+}
+
+.estadisticas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: #ffffff;
+    color: #333;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    flex: 1 1 150px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-card h3 {
+    text-transform: capitalize;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: #203a43;
+}
+
+.stat-card p {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.admin-create-user {
+    margin: 1.5rem 0;
+}
+
+.btn-create-user {
+    font-size: 1rem;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #203a43, #2c5364);
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-create-user:hover {
+    opacity: 0.95;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    color: #333;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+.users-table th,
+.users-table td {
+    padding: 0.6rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.users-table thead {
+    background-color: #203a43;
+    color: #ffffff;
+}
+
+.users-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.users-table button {
+    margin: 0 0.2rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.users-table button:first-child {
+    background-color: #2c5364;
+    color: #ffffff;
+}
+
+.users-table button:last-child {
+    background-color: #8b2f2f;
+    color: #ffffff;
+}
+
+/* 
+< ===================================================== >
+    615px Parche para movil (Lo he intentado con mobile first y es imposible)
+< ===================================================== >
+*/
+@media (max-width: 615px) {
+    .users-table thead {
+        display: none;
+    }
+
+    .users-table,
+    .users-table tbody,
+    .users-table tr,
+    .users-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .users-table tr {
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        background: #ffffff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .users-table td {
+        position: relative;
+        padding: 0.7rem;
+        padding-left: 45%;
+        text-align: left;
+    }
+
+    .users-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0.7rem;
+        width: 40%;
+        font-weight: 600;
+        color: #000;
+        text-align: left;
+        white-space: nowrap;
+    }
+}/*615px*/
+
+/* 
+< ===================================================== >
+                        768px
+< ===================================================== >
+*/
+@media screen and (min-width:768px) {
+    .admin-dashboard { 
+        padding: 2rem; 
+    }
+    .users-table th,
+    .users-table td { 
+        padding: 0.8rem; 
+    }
+}/*768px*/
+
+/* 
+< ===================================================== >
+                        992px
+< ===================================================== >
+*/
+@media screen and (min-width:992px) {
+    .admin-dashboard h2 { 
+        font-size: 2.2rem; 
+    }
+
+    .users-table th,
+    .users-table td { 
+        font-size: 1.05rem; 
+    }
+    
+    .btn-create-user {
+        font-size: 1.1rem;
+    }
+}/*992px*/
+
+/* 
+< ===================================================== >
+                        1200px
+< ===================================================== >
+*/
+@media screen and (min-width:1200px) {
+    .admin-dashboard h2 { font-size: 2.4rem; }
+    .users-table { 
+        width: 95%; 
+        margin: auto; 
+    }
+
+    .estadisticas {
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+
+    .stat-card h3 {
+        font-size: 1.2rem;
+    }
+
+    .stat-card p {
+        font-size: 1.2rem;
+    }
+
+    .btn-create-user {
+        font-size: 1.2rem;
+    }
+}/*1200px*/

@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import {jwtDecode} from "jwt-decode";
+import "../../css/CreateReport.css";
+
 
 export const CreateReport = () => {
     const { state } = useLocation();

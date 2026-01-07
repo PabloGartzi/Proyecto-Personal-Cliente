@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { LogoutButton } from '../../components/LogoutButton';
 import {jwtDecode} from "jwt-decode";
 import "../../css/ModalBorrar.css"
+import "../../css/AdminDashboard.css"
 
 
 export const AdminDashboard = () => {
@@ -146,14 +147,18 @@ export const AdminDashboard = () => {
 
         <LogoutButton/>
 
-        <h3>Total de usuarios: {totalUsers}</h3>
-        <ul>
-        {usersByRole.map(role => (
-            <li key={role.role_id}>
-            {role.role_name}: {role.total_users}
-            </li>
-        ))}
-        </ul>
+        <div className="estadisticas">
+            <div className="stat-card">
+                <h3>Total de usuarios:</h3>
+                <p>{totalUsers}</p>
+            </div>
+            {usersByRole.map(role => (
+                <div key={role.role_id} className="stat-card">
+                    <h3>{role.role_name}:</h3>
+                    <p>{role.total_users}</p>
+                </div>
+            ))}
+        </div>
         <div className="admin-create-user">
         <button className="btn-create-user" onClick={handleCreateUser}>
             + Crear nuevo usuario
@@ -179,13 +184,13 @@ export const AdminDashboard = () => {
             ) : (
                 users.map(user => (
                 <tr key={user.user_id}>
-                    <td>{user.user_id}</td>
-                    <td>{user.user_name}</td>
-                    <td>{user.user_email}</td>
-                    <td>{user.role_name}</td>
-                    <td>{user.is_active ? 'Sí' : 'No'}</td>
-                    <td>{new Date(user.user_created_at).toLocaleString()}</td>
-                    <td>
+                    <td data-label="ID">{user.user_id}</td>
+                    <td data-label="Nombre">{user.user_name}</td>
+                    <td data-label="Email">{user.user_email}</td>
+                    <td data-label="Rol">{user.role_name}</td>
+                    <td data-label="Activo">{user.is_active ? 'Sí' : 'No'}</td>
+                    <td data-label="Creando en">{new Date(user.user_created_at).toLocaleString()}</td>
+                    <td data-label="Acciones">
                     <button onClick={() => handleEdit(user)}>Editar</button>
                     <button onClick={() => abrirVentanaModal(user)}>Eliminar</button>
                     </td>

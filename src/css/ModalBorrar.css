@@ -12,7 +12,7 @@
 }
 
 .modal {
-  background-color: #fff;
+  background-color: #ffffff;
   color: black;
   padding: 20px 30px;
   border-radius: 8px;
@@ -35,3 +35,75 @@
   background-color: gray;
   color: white;
 }
+
+/* 
+< ===================================================== >
+                        500px
+< ===================================================== >
+*/
+@media screen and (min-width:500px) {
+  .modal {
+    min-width: 350px;
+    max-width: 450px;
+    padding: 25px 35px;
+    font-size: 0.95rem;
+  }
+  .modal button {
+    padding: 9px 14px;
+    font-size: 0.95rem;
+  }
+}/*500px*/
+
+/* 
+< ===================================================== >
+                        768px
+< ===================================================== >
+*/
+@media screen and (min-width:768px) {
+  .modal {
+    min-width: 400px;
+    max-width: 500px;
+    padding: 30px 40px;
+    font-size: 1rem;
+  }
+  .modal button {
+    padding: 10px 16px;
+    font-size: 1rem;
+  }
+}/*768px*/
+
+/* 
+< ===================================================== >
+                        992px
+< ===================================================== >
+*/
+@media screen and (min-width:992px) {
+  .modal {
+    min-width: 450px;
+    max-width: 550px;
+    padding: 35px 45px;
+    font-size: 1.1rem;
+  }
+  .modal button {
+    padding: 11px 18px;
+    font-size: 1.1rem;
+  }
+}/*992px*/
+
+/* 
+< ===================================================== >
+                        1200px
+< ===================================================== >
+*/
+@media screen and (min-width:1200px) {
+  .modal {
+    min-width: 500px;
+    max-width: 600px;
+    padding: 40px 50px;
+    font-size: 1.2rem;
+  }
+  .modal button {
+    padding: 12px 20px;
+    font-size: 1.2rem;
+  }
+}/*1200px*/

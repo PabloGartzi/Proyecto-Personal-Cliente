@@ -174,11 +174,23 @@ export const OfficeDashboard = () => {
             <h2>Panel de Oficina</h2>
             <LogoutButton />
 
-            <div className="office-statistics">
-                <p>Total de trabajos: {totalWorks}</p>
-                <p>Trabajos pendientes: {worksPending}</p>
-                <p>Trabajos en curso: {worksInProgress}</p>
-                <p>Trabajos completados: {worksCompleted}</p>
+            <div className="estadisticas">
+                <div className="stat-card">
+                    <h3>Total de trabajos:</h3>
+                    <p>{totalWorks}</p>
+                </div>
+                <div className="stat-card">
+                    <h3>Trabajos pendientes:</h3>
+                    <p>{worksPending}</p>
+                </div>
+                <div className="stat-card">
+                    <h3>Trabajos en curso:</h3>
+                    <p>{worksInProgress}</p>
+                </div>
+                <div className="stat-card">
+                    <h3>Trabajos completados:</h3>
+                    <p>{worksCompleted}</p>
+                </div>
             </div>
             <div className="office-create-work">
                 <button className="btn-create-work" onClick={handleCreateWork}>
@@ -208,19 +220,25 @@ export const OfficeDashboard = () => {
                         </tr>
                     ) : (works.map(work => (
                             <tr key={work.job_id}>
-                                <td>{work.job_id}</td>
-                                <td>{work.job_title}</td>
-                                <td>{work.job_description}</td>
-                                <td>{work.job_status}</td>
-                                <td>{work.job_address}</td>
-                                <td>{work.job_latitude}</td>
-                                <td>{work.job_longitude}</td>
-                                <td>{work.assigned_worker_user_id || '-'}</td>
-                                <td>{new Date(work.job_created_at).toLocaleString()}</td>
-                                <td>
+                                <td data-label="ID">{work.job_id}</td>
+                                <td data-label="Título">{work.job_title}</td>
+                                <td data-label="Descripción">{work.job_description}</td>
+                                <td data-label="Estado">{work.job_status}</td>
+                                <td data-label="Dirección">{work.job_address}</td>
+                                <td data-label="Latitud">{work.job_latitude}</td>
+                                <td data-label="Longitud">{work.job_longitude}</td>
+                                <td data-label="Asignado a">
+                                    {work.assigned_worker_user_id || '-'}
+                                </td>
+                                <td data-label="Creado en">
+                                    {new Date(work.job_created_at).toLocaleString()}
+                                </td>
+                                <td data-label="Acciones">
                                     <button onClick={() => handleEdit(work)}>Editar</button>
                                     <button onClick={() => abrirVentanaModal(work)}>Eliminar</button>
-                                    <button onClick={() => handleReports(work.job_id)}>Descargar Reportes</button>
+                                    <button onClick={() => handleReports(work.job_id)}>
+                                        Descargar Reportes
+                                    </button>
                                 </td>
                             </tr>
                         ))

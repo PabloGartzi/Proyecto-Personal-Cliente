@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useCookies } from 'react-cookie';
 import {jwtDecode} from "jwt-decode";
-
+import "../../css/EditReport.css";
 
 export const EditReport = () => {
     const { report_id } = useParams();
@@ -76,13 +76,12 @@ export const EditReport = () => {
         <form onSubmit={handleSubmit} className="edit-report-form">
             <label htmlFor="report_notes">Informe</label>
             <textarea id="report_notes" name="report_notes" value={form.report_notes} onChange={handleChange} placeholder="Notas del reporte"/>
+            <p className='current-image-title'>Imagen actual:</p>
             {form.imagen && (
                     <div className="current-image">
-                    <p>Imagen actual:</p>
                     <img
                         src={`http://localhost:4001/upload/${form.imagen}`}
                         alt="Imagen del reporte"
-                        style={{ width: '200px', display: 'block', marginBottom: '1rem' }}
                     />
                     </div>
                 )}

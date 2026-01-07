@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router';
 import { useCookies } from 'react-cookie';
 import React from 'react';
+import "../../css/CreateWork.css";
 
 export const CreateWork = () => {
     const [cookies] = useCookies(['token']);

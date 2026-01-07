@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { LogoutButton } from '../../components/LogoutButton';
 import {jwtDecode} from "jwt-decode";
 import { WorksMap } from '../WorksMap';
-
+import '../../css/WorkerDashboard.css'
 
 export const WorkerDashboard = () => {
     const navigate = useNavigate();
@@ -80,11 +80,11 @@ export const WorkerDashboard = () => {
                 </tr>
             ) : (works.map(work => (
                     <tr key={work.job_id}>
-                        <td>{work.job_id}</td>
-                        <td>{work.job_title}</td>
-                        <td>{work.job_description}</td>
-                        <td>{work.job_status}</td>
-                        <td>
+                        <td data-label="ID">{work.job_id}</td>
+                        <td data-label="Título">{work.job_title}</td>
+                        <td data-label="Descripción">{work.job_description}</td>
+                        <td data-label="Estado">{work.job_status}</td>
+                        <td data-label="Acciones">
                             <button onClick={() => handleDetailed(work)}>Abrir vista detallada</button>
                         </td>
                     </tr>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useCookies } from 'react-cookie';
+import "../../css/EditWork.css";
 
 export const EditWork = () => {
     const { id } = useParams();

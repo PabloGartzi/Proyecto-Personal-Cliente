@@ -1,0 +1,171 @@
+/* =========================
+   WorkerDashboard.css
+   ========================= */
+
+.worker-dashboard {
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #ffffff;
+}
+
+.worker-dashboard h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.worker-dashboard h3 {
+    margin: 2.5rem 0 1rem;
+    font-size: 1.6rem;
+    text-align: center;
+}
+
+.jobs-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    color: #333;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+.jobs-table thead {
+    background: linear-gradient(135deg, #203a43, #2c5364);
+    color: #ffffff;
+}
+
+.jobs-table th,
+.jobs-table td {
+    padding: 0.75rem 0.9rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.jobs-table tbody tr:nth-child(even) {
+    background: #f4f6f7;
+}
+
+.jobs-table tbody tr:hover {
+    background: #e9ecef;
+}
+
+.jobs-table button {
+    padding: 0.4rem 0.7rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    background: linear-gradient(135deg, #203a43, #2c5364);
+    color: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.jobs-table button:hover {
+    transform: translateY(-1px);
+    opacity: 0.95;
+}
+
+/* 
+< ===================================================== >
+    615px Parche para movil (Lo he intentado con mobile first y es imposible)
+< ===================================================== >
+*/
+@media (max-width: 615px) {
+    .jobs-table thead {
+        display: none;
+    }
+
+    .jobs-table,
+    .jobs-table tbody,
+    .jobs-table tr,
+    .jobs-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .jobs-table tr {
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        background: #ffffff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .jobs-table td {
+        position: relative;
+        padding: 0.7rem;
+        padding-left: 45%;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+
+    .jobs-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0.7rem;
+        width: 40%;
+        font-weight: 600;
+        color: #203a43;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .jobs-table button {
+        width: 100%;
+        text-align: center;
+    }
+}/*615px*/
+
+/* 
+< ===================================================== >
+                        768px
+< ===================================================== >
+*/
+@media screen and (min-width: 768px) {
+    .worker-dashboard h2 { 
+        font-size: 2.2rem; 
+    }
+    
+    .worker-dashboard h3 { 
+        font-size: 1.8rem; 
+    }
+    
+    .jobs-table th,
+    .jobs-table td { 
+        font-size: 1.05rem; 
+    }
+}/*768px*/
+
+/* 
+< ===================================================== >
+                        992px
+< ===================================================== >
+*/
+@media screen and (min-width: 992px) {
+    .worker-dashboard h2 { 
+        font-size: 2.3rem; 
+    }
+    
+    .jobs-table th,
+    .jobs-table td { 
+        font-size: 1.1rem; 
+    }
+}/*992px*/
+
+/* 
+< ===================================================== >
+                        1200px
+< ===================================================== >
+*/
+@media screen and (min-width: 1200px) {
+    .worker-dashboard h2 { 
+        font-size: 2.5rem; 
+    }
+    
+    .jobs-table th,
+    .jobs-table td { 
+        font-size: 1.2rem; 
+    }
+}/*1200px*/

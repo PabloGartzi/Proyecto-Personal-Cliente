@@ -1,5 +1,6 @@
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router";
+import "../css/LogoutButton.css"
 
 export const LogoutButton = () => {
   const [, , removeCookie] = useCookies(["token"]);

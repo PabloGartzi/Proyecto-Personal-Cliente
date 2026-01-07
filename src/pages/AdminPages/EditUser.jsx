@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useCookies } from 'react-cookie';
 import {jwtDecode} from "jwt-decode";
+import "../../css/EditUser.css";
+import "../../css/OfficeDashboard.css";
+
 
 export const EditUser = () => {
     const { id } = useParams();

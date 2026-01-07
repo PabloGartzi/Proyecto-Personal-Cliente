@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router';
 import { useCookies } from 'react-cookie';
 import React from 'react';
+import "../../css/CreateUser.css";
 
 export const CreateUser = () => {
     const [cookies] = useCookies(['token']);
