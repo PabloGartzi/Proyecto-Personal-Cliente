@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router';
 import { useCookies } from 'react-cookie';
 import "../../css/EditWork.css";
 
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
 export const EditWork = () => {
     const { id } = useParams();
     const [cookies] = useCookies(['token']);
@@ -12,7 +14,7 @@ export const EditWork = () => {
     // Traer los datos del trabajo
     const fetchWork = async () => {
         try {
-        const res = await fetch(`http://localhost:4001/office/dashboard/${id}`, {
+        const res = await fetch(`${BASE_URL}/office/dashboard/${id}`, {
             headers: { Authorization: `Bearer ${cookies.token}` }
         });
 
@@ -46,7 +48,7 @@ export const EditWork = () => {
         if (!form) return;
 
         try {
-            const res = await fetch(`http://localhost:4001/office/updateWork/${id}`, {
+            const res = await fetch(`${BASE_URL}/office/updateWork/${id}`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',

@@ -4,6 +4,8 @@ import { jwtDecode } from "jwt-decode";
 import { useCookies } from 'react-cookie';
 import '../css/LoginPage.css';
 
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
 export const LoginPage = () => {
     const navigate = useNavigate();
     const [, setCookie] = useCookies(['token']);
@@ -14,7 +16,7 @@ export const LoginPage = () => {
         const email = ev.target.elements.email.value;
         const password = ev.target.elements.password.value;
 
-        const url = 'http://localhost:4001/login';
+        const url = `${BASE_URL}/login`;
         const options = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

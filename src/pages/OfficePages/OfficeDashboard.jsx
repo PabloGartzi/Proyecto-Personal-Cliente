@@ -6,6 +6,8 @@ import { jwtDecode } from 'jwt-decode';
 import { WorksMap } from '../WorksMap';
 import '../../css/ModalBorrar.css';
 
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
 export const OfficeDashboard = () => {
     const navigate = useNavigate();
     const [works, setWorks] = useState([]);
@@ -42,7 +44,7 @@ export const OfficeDashboard = () => {
 
     const fetchStatistics = async () => {
         try {
-        const res = await fetch('http://localhost:4001/office/statistics', {
+        const res = await fetch(`${BASE_URL}/office/statistics`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -72,7 +74,7 @@ export const OfficeDashboard = () => {
     // Fetch de todos los trabajos
     const fetchWorks = async () => {
         try {
-            const res = await fetch('http://localhost:4001/office/dashboard', {
+            const res = await fetch(`${BASE_URL}/office/dashboard`, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${cookies.token}`,
@@ -97,7 +99,7 @@ export const OfficeDashboard = () => {
     // Borrar trabajo
     const handleDelete = async (id) => {
         try {
-            const res = await fetch(`http://localhost:4001/office/deleteWork/${id}`, {
+            const res = await fetch(`${BASE_URL}/office/deleteWork/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -130,7 +132,7 @@ export const OfficeDashboard = () => {
     const handleReports = async (id) => {
         try {
             const res = await fetch(
-                `http://localhost:4001/worker/workReport/${id}`,
+                `${BASE_URL}/worker/workReport/${id}`,
                 {
                     method: 'GET',
                     headers: {

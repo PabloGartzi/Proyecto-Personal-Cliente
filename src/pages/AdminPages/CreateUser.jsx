@@ -3,6 +3,8 @@ import { useCookies } from 'react-cookie';
 import React from 'react';
 import "../../css/CreateUser.css";
 
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
 export const CreateUser = () => {
     const [cookies] = useCookies(['token']);
     const navigate = useNavigate();
@@ -16,7 +18,7 @@ export const CreateUser = () => {
         const role = ev.target.elements.role.value;
 
         try {
-            const res = await fetch(`http://localhost:4001/admin/createUser`, {
+            const res = await fetch(`${BASE_URL}/admin/createUser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -39,7 +41,7 @@ export const CreateUser = () => {
     return (
         <div className="create-user">
         <h2>Crear usuario nuevo</h2>
-        <form onSubmit={handleSubmit} className="create-user-form">
+        <form noValidate onSubmit={handleSubmit} className="create-user-form">
             <input type="text" name="user_name" placeholder="Nombre" required />
             <input type="email" name="user_email" placeholder="Email" required />
             <input type="password" name="password" placeholder="Nueva contraseña" />

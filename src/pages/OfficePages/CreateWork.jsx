@@ -3,6 +3,8 @@ import { useCookies } from 'react-cookie';
 import React from 'react';
 import "../../css/CreateWork.css";
 
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
 export const CreateWork = () => {
     const [cookies] = useCookies(['token']);
     const navigate = useNavigate();
@@ -18,7 +20,7 @@ export const CreateWork = () => {
         const job_longitude = ev.target.elements.job_longitude.value;
         const user_email = ev.target.elements.user_email.value;
         try {
-            const res = await fetch(`http://localhost:4001/office/createWork`, {
+            const res = await fetch(`${BASE_URL}/office/createWork`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

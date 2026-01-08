@@ -5,6 +5,7 @@ import { useCookies } from 'react-cookie';
 import {jwtDecode} from "jwt-decode";
 import "../../css/CreateReport.css";
 
+const BASE_URL = import.meta.env.VITE_URL_BASE;
 
 export const CreateReport = () => {
     const { state } = useLocation();
@@ -24,7 +25,7 @@ export const CreateReport = () => {
         const worker_user_id = decoded.uid;
 
         try {
-            const res = await fetch(`http://localhost:4001/worker/createReport/${job_id}/${worker_user_id}`, {
+            const res = await fetch(`${BASE_URL}/worker/createReport/${job_id}/${worker_user_id}`, {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${cookies.token}`,

@@ -6,6 +6,8 @@ import {jwtDecode} from "jwt-decode";
 import { WorksMap } from '../WorksMap';
 import '../../css/WorkerDashboard.css'
 
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
 export const WorkerDashboard = () => {
     const navigate = useNavigate();
     const [works, setWorks] = useState([]);

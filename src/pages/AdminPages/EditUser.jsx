@@ -5,6 +5,7 @@ import {jwtDecode} from "jwt-decode";
 import "../../css/EditUser.css";
 import "../../css/OfficeDashboard.css";
 
+const BASE_URL = import.meta.env.VITE_URL_BASE;
 
 export const EditUser = () => {
     const { id } = useParams();
@@ -14,7 +15,7 @@ export const EditUser = () => {
     
     const fetchUser = async () => {
         try {
-            const res = await fetch(`http://localhost:4001/admin/dashboard/${id}`, {
+            const res = await fetch(`${BASE_URL}/admin/dashboard/${id}`, {
                 headers: { Authorization: `Bearer ${cookies.token}` }
             });
             const data = await res.json();
@@ -39,7 +40,7 @@ export const EditUser = () => {
         e.preventDefault();
         if (!form) return;
         try {
-            const res = await fetch(`http://localhost:4001/admin/updateUser/${id}`, {
+            const res = await fetch(`${BASE_URL}/admin/updateUser/${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

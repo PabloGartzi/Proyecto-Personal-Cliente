@@ -5,6 +5,8 @@ import {jwtDecode} from "jwt-decode";
 import "../../css/EditReport.css";
 import "../../css/ModalErrorReporte.css"
 
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
 export const EditReport = () => {
     const { report_id } = useParams();
     const [cookies] = useCookies(['token']);

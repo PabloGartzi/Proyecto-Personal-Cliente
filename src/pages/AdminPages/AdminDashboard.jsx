@@ -3,6 +3,9 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router';
 import { LogoutButton } from '../../components/LogoutButton';
 import {jwtDecode} from "jwt-decode";
+
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
 import "../../css/ModalBorrar.css"
 import "../../css/AdminDashboard.css"
 
@@ -39,7 +42,7 @@ export const AdminDashboard = () => {
 
     const fetchStatistics = async () => {
         try {
-        const res = await fetch('http://localhost:4001/admin/statistics', {
+        const res = await fetch(`${BASE_URL}/admin/statistics`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -66,7 +69,7 @@ export const AdminDashboard = () => {
 
     const fetchUsers = async () => {
         try {
-        const res = await fetch('http://localhost:4001/admin/dashboard', {
+        const res = await fetch(`${BASE_URL}/admin/dashboard`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -95,7 +98,7 @@ export const AdminDashboard = () => {
         // if (!confirm) return;
 
         try {
-            const res = await fetch(`http://localhost:4001/admin/deleteUser/${id}`, {
+            const res = await fetch(`${BASE_URL}/admin/deleteUser/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

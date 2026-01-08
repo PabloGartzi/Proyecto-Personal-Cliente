@@ -6,6 +6,8 @@ import "../../css/ModalBorrar.css"
 import "../../css/WorkerWorkDetailed.css"
 import "../../css/ModalErrorReporte.css"
 
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
 export const WorkerWorkDetailed = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
@@ -43,7 +45,7 @@ export const WorkerWorkDetailed = () => {
     const fetchWork = async () => {
         try {
             const res = await fetch(
-                `http://localhost:4001/worker/work/${state.jobId}`,
+                `${BASE_URL}/worker/work/${state.jobId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${cookies.token}`,
@@ -68,7 +70,7 @@ export const WorkerWorkDetailed = () => {
     const fetchReports = async () => {
         try {
             const res = await fetch(
-                `http://localhost:4001/worker/viewWorkReport/${state.jobId}`,
+                `${BASE_URL}/worker/viewWorkReport/${state.jobId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${cookies.token}`,
@@ -99,7 +101,7 @@ export const WorkerWorkDetailed = () => {
         ev.preventDefault();
         try {
             const res = await fetch(
-                `http://localhost:4001/worker/updateWork/${state.jobId}`,
+                `${BASE_URL}/worker/updateWork/${state.jobId}`,
                 {
                     method: 'POST',
                     headers: {
@@ -125,7 +127,7 @@ export const WorkerWorkDetailed = () => {
     const handleReports = async (id) => {
         try {
             const res = await fetch(
-                `http://localhost:4001/worker/workReport/${id}`,
+                `${BASE_URL}/worker/workReport/${id}`,
                 {
                     method: 'GET',
                     headers: {
@@ -171,7 +173,7 @@ export const WorkerWorkDetailed = () => {
         const decoded = jwtDecode(cookies.token);
         const uid = decoded.uid;
         try {
-            const res = await fetch(`http://localhost:4001/worker/deleteReport/${id}/${uid}`, {
+            const res = await fetch(`${BASE_URL}/worker/deleteReport/${id}/${uid}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
