@@ -19,7 +19,7 @@ export const WorkerDashboard = () => {
         const decoded = jwtDecode(cookies.token);
         const id = decoded.uid;
         try {
-        const res = await fetch(`http://localhost:4001/worker/dashboard/${id}`, {
+        const res = await fetch(`${BASE_URL}/worker/dashboard/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

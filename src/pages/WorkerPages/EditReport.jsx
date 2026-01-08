@@ -19,7 +19,7 @@ export const EditReport = () => {
     // Traer los datos del reporte
     const fetchReport = async () => {
         try {
-            const res = await fetch(`http://localhost:4001/worker/getReportById/${report_id}`, {
+            const res = await fetch(`${BASE_URL}/worker/getReportById/${report_id}`, {
                 headers: { Authorization: `Bearer ${cookies.token}` }
             });
             const data = await res.json();
@@ -50,7 +50,7 @@ export const EditReport = () => {
         const uid = decoded.uid;
         try {
             const formData = new FormData(ev.target); //Formulario (El texto que meta el worker y la imágen)
-            const res = await fetch(`http://localhost:4001/worker/updateReport/${report_id}/${uid}`, {
+            const res = await fetch(`${BASE_URL}/worker/updateReport/${report_id}/${uid}`, {
                 method: 'POST',
                 headers: {
                 Authorization: `Bearer ${cookies.token}`
@@ -91,7 +91,7 @@ export const EditReport = () => {
             {form.imagen && (
                     <div className="current-image">
                     <img
-                        src={`http://localhost:4001/upload/${form.imagen}`}
+                        src={`${BASE_URL}/upload/${form.imagen}`}
                         alt="Imagen del reporte"
                     />
                     </div>
