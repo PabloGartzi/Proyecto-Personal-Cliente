@@ -58,6 +58,32 @@
     margin: 1.5rem 0;
 }
 
+.office-search {
+    margin: 1.5rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+.office-search input {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.office-search input::placeholder {
+    color: #888;
+}
+
+.office-search input:focus {
+    border-color: #2c5364;
+    box-shadow: 0 0 10px rgba(44, 83, 100, 0.4);
+}
+
 .btn-create-work {
     padding: 0.7rem 1rem;
     border-radius: 10px;

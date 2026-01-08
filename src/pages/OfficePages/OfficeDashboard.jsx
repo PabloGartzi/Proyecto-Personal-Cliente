@@ -25,6 +25,9 @@ export const OfficeDashboard = () => {
     const [ventanaModal, setVentanaModal] = useState(false);
     const [borrarWork, setBorrarWork] = useState(null);
 
+    const [busqueda, setBusqueda] = useState("");
+
+
     // Modal de confirmación
     const abrirVentanaModal = (work) => {
         setBorrarWork(work);
@@ -87,6 +90,7 @@ export const OfficeDashboard = () => {
             }
 
             setWorks(data.data);
+            console.log(data.data)
 
         } catch (error) {
             console.error(error);
@@ -168,6 +172,12 @@ export const OfficeDashboard = () => {
         fetchStatistics();
     }, [cookies.token]);
 
+    const trabajosFiltrados = works.filter(work => 
+        `${work.job_title} ${work.job_description} ${work.job_status} ${work.assigned_worker_user_email}`
+            .toLowerCase()
+            .includes(busqueda.toLowerCase().trim())
+    );
+
     if (loadingWorks || loadingStats) return <p>Cargando trabajos...</p>;
     if (error) return <p>{error}</p>;
 
@@ -199,7 +209,14 @@ export const OfficeDashboard = () => {
                     + Crear nuevo trabajo
                 </button>
             </div>
-
+            <div className="office-search">
+                <input
+                    type="text"
+                    placeholder="Buscar trabajos..."
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
+                />
+            </div>
             <table className="works-table">
                 <thead>
                     <tr>
@@ -210,17 +227,18 @@ export const OfficeDashboard = () => {
                         <th>Dirección</th>
                         <th>Latitud</th>
                         <th>Longitud</th>
-                        <th>Asignado a (ID)</th>
+                        <th>Asignado a (email)</th>
                         <th>Creado en</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {works.length === 0 ? (
+                    {trabajosFiltrados.length == 0 ? (
                         <tr>
                             <td colSpan="10">No hay trabajos</td>
                         </tr>
-                    ) : (works.map(work => (
+                    ) : (
+                        trabajosFiltrados.map(work => (
                             <tr key={work.job_id}>
                                 <td data-label="ID">{work.job_id}</td>
                                 <td data-label="Título">{work.job_title}</td>
@@ -229,18 +247,12 @@ export const OfficeDashboard = () => {
                                 <td data-label="Dirección">{work.job_address}</td>
                                 <td data-label="Latitud">{work.job_latitude}</td>
                                 <td data-label="Longitud">{work.job_longitude}</td>
-                                <td data-label="Asignado a">
-                                    {work.assigned_worker_user_id || '-'}
-                                </td>
-                                <td data-label="Creado en">
-                                    {new Date(work.job_created_at).toLocaleString()}
-                                </td>
+                                <td data-label="Asignado a">{work.assigned_worker_user_email || '-'}</td>
+                                <td data-label="Creado en">{new Date(work.job_created_at).toLocaleString()}</td>
                                 <td data-label="Acciones">
                                     <button onClick={() => handleEdit(work)}>Editar</button>
                                     <button onClick={() => abrirVentanaModal(work)}>Eliminar</button>
-                                    <button onClick={() => handleReports(work.job_id)}>
-                                        Descargar Reportes
-                                    </button>
+                                    <button onClick={() => handleReports(work.job_id)}>Descargar Reportes</button>
                                 </td>
                             </tr>
                         ))
