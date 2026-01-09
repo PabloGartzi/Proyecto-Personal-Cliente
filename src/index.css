@@ -1,3 +1,116 @@
+/* Variables básicas */
+:root {
+  /* =========================
+     Colores base
+     ========================= */
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-text-dark: #333;
+  --color-text-light: #eaeaea;
+  --color-text-muted: #888;
+
+  --color-gray-light: #f2f2f2;
+  --color-gray-medium: #ccc;
+  --color-gray-dark: #555;
+
+  /* =========================
+     Colores principales
+     ========================= */
+  --color-primary-900: #0f2027;
+  --color-primary-800: #141e30;
+  --color-primary-700: #203a43;
+  --color-primary-600: #243b55;
+  --color-primary-500: #2c5364;
+
+  /* =========================
+     Estados / acciones
+     ========================= */
+  --color-danger: #8b2f2f;
+  --color-danger-dark: #5f1f1f;
+
+  --color-success-700: #2d5725;
+  --color-success-600: #2c6464;
+
+  --color-warning-700: #7a5035;
+  --color-warning-800: #432020;
+
+  /* =========================
+     Gradientes
+     ========================= */
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--color-primary-900),
+    var(--color-primary-700),
+    var(--color-primary-500)
+  );
+
+  --gradient-secondary: linear-gradient(
+    135deg,
+    var(--color-primary-800),
+    var(--color-primary-600)
+  );
+
+  --gradient-button-primary: linear-gradient(
+    135deg,
+    var(--color-primary-700),
+    var(--color-primary-500)
+  );
+
+  --gradient-button-danger: linear-gradient(
+    135deg,
+    var(--color-danger),
+    var(--color-danger-dark)
+  );
+
+  /* =========================
+     Bordes y radios
+     ========================= */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-xxl: 14px;
+
+  /* =========================
+     Sombras
+     ========================= */
+  --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.25);
+  --shadow-xl: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+  /* =========================
+     Tipografía
+     ========================= */
+  --font-size-xs: 0.8rem;
+  --font-size-sm: 0.9rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.2rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+  --font-size-title: 2.5rem;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* =========================
+     Espaciados
+     ========================= */
+  --space-xs: 0.4rem;
+  --space-sm: 0.6rem;
+  --space-md: 0.8rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 2.5rem;
+
+  /* =========================
+     Inputs / focus
+     ========================= */
+  --focus-ring-primary: 0 0 0 3px rgba(44, 83, 100, 0.15);
+  --focus-ring-secondary: 0 0 0 3px rgba(36, 59, 85, 0.15);
+}
 /* Reset básico */
 * {
   box-sizing: border-box;

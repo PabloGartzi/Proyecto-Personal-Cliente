@@ -246,7 +246,6 @@ export const WorkerWorkDetailed = () => {
                 </tbody>
             </table>
 
-            <hr />
             <div className="update-status">
                 <h3>Actualizar estado</h3>
                 <form onSubmit={handleSubmit} className="update-work">

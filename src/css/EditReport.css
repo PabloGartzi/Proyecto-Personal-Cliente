@@ -1,5 +1,5 @@
 /* =========================
-   EditReport.css
+   EditReport.css (Variables aplicadas)
    ========================= */
 
 .edit-report {
@@ -8,86 +8,85 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, #141e30, #243b55);
-    color: #ffffff;
+    padding: var(--space-lg);
+    background: linear-gradient(135deg, var(--color-primary-800), var(--color-primary-600)); /* Usando variables */
+    color: var(--color-white);
 }
 
 .edit-report h2 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
+    font-size: var(--font-size-xxl);
+    margin-bottom: var(--space-xxl);
     text-align: center;
 }
 
 .edit-report-form {
-    background: #ffffff;
+    background: var(--color-white);
     padding: 2.5rem 2.8rem;
-    border-radius: 14px;
+    border-radius: var(--radius-xxl);
     width: 85%;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    box-shadow: var(--shadow-lg);
 }
 
 .edit-report-form label {
-    font-weight: 600;
-    color: #333;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-dark);
 }
 
 .edit-report-form textarea {
     resize: vertical;
     min-height: 120px;
     padding: 0.65rem 0.8rem;
-    border-radius: 8px;
-    border: 1px solid #dcdcdc;
-    font-size: 0.95rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-gray-medium);
+    font-size: var(--font-size-sm);
 }
 
 .current-image {
-    margin: 1rem 0;
-    color: #333;
+    margin: var(--space-md) 0;
+    color: var(--color-text-dark);
 }
 
 .current-image-title {
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 0.5rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-dark);
+    margin-bottom: var(--space-xs);
 }
 
 .current-image img {
     width: 100%;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* Mantener sombra propia */
 }
 
-
 .edit-report-form input[type="file"] {
-    font-size: 0.9rem;
-    color: #333;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-dark);
 }
 
 .edit-report-form textarea:focus,
 .edit-report-form input:focus {
     outline: none;
-    border-color: #2d3436;
-    box-shadow: 0 0 0 3px rgba(45, 52, 54, 0.15);
+    border-color: var(--color-gray-dark); /* sustituyendo #2d3436 */
+    box-shadow: var(--focus-ring-secondary); /* usando variable */
 }
 
 .edit-report-form button {
-    margin-top: 0.8rem;
+    margin-top: var(--space-md);
     padding: 0.75rem;
-    border-radius: 10px;
+    border-radius: var(--radius-lg);
     border: none;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
-    font-size: 1rem;
+    font-size: var(--font-size-md);
     transition: all 0.2s ease;
 }
 
 .edit-report-form button[type="submit"] {
-    background: linear-gradient(135deg, #1c1c1c, #2d3436);
-    color: #ffffff;
+    background: linear-gradient(135deg, #1c1c1c, #2d3436); /* Mantener gradiente propio */
+    color: var(--color-white);
 }
 
 .edit-report-form button[type="submit"]:hover {
@@ -96,8 +95,8 @@
 }
 
 .edit-report-form button[type="button"] {
-    background: #8b2f2f;
-    color: #ffffff;
+    background: var(--color-danger);
+    color: var(--color-white);
 }
 
 .edit-report-form button[type="button"]:hover {
@@ -122,7 +121,6 @@
     .edit-report-form button { 
         font-size: 1.05rem; 
     }
-    
 }/*500px*/
 
 /* 
@@ -169,7 +167,6 @@
     .edit-report-form button { 
         font-size: 1.2rem; 
     }
-
 }/*992px*/
 
 /* 
@@ -179,7 +176,7 @@
 */
 @media screen and (min-width: 1200px) {
     .edit-report h2 { 
-        font-size: 2.5rem; 
+        font-size: var(--font-size-title); 
     }
     
     .edit-report-form { 
@@ -194,5 +191,3 @@
         font-size: 1.3rem; 
     }
 }/*1200px*/
-
-

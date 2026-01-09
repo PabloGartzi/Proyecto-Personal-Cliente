@@ -40,9 +40,9 @@ export const CreateWork = () => {
         }
     };
     return (
-        <div className="edit-user">
+        <div className="create-work">
         <h2>Crear trabajo nuevo</h2>
-        <form onSubmit={handleSubmit} className="edit-user-form">
+        <form onSubmit={handleSubmit} className="create-work-form">
             <input type="text" name="job_title" placeholder="Título" required />
             <input type="text" name="job_description" placeholder="Descripción" required />
             <select name="job_status" required>

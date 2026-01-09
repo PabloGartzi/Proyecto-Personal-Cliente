@@ -4,13 +4,13 @@
 
 .btn-logout {
     margin: 1rem 0;
-    padding: 0.6rem 1rem;
+    padding: 0.6rem 1rem; /* Mantener padding específico, se ajusta en media queries */
     border-radius: 10px;
     border: none;
-    background: linear-gradient(135deg, #8b2f2f, #5f1f1f);
-    color: white;
+    background: linear-gradient(135deg, var(--color-danger), var(--color-danger-dark)); /* Gradiente usando variables */
+    color: var(--color-white);
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
 }
 

@@ -4,62 +4,58 @@
 
 .worker-dashboard {
     min-height: 100vh;
-    padding: 2rem 1.5rem;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: #ffffff;
+    padding: var(--space-lg) var(--space-md);
+    background: var(--gradient-primary);
+    color: var(--color-text-light);
 }
 
 .worker-dashboard h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
+    font-size: var(--font-size-xxl);
+    margin-bottom: var(--space-lg);
     text-align: center;
 }
 
 .worker-dashboard h3 {
-    margin: 2.5rem 0 1rem;
-    font-size: 1.6rem;
+    margin: var(--space-xl) 0 var(--space-md);
+    font-size: var(--font-size-lg);
     text-align: center;
 }
 
 .jobs-table {
     width: 100%;
     border-collapse: collapse;
-    background: #ffffff;
-    color: #333;
-    border-radius: 14px;
+    background: var(--color-white);
+    color: var(--color-text-dark);
+    border-radius: var(--radius-xxl);
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    box-shadow: var(--shadow-lg);
 }
 
 .jobs-table thead {
-    background: linear-gradient(135deg, #203a43, #2c5364);
-    color: #ffffff;
+    background: var(--gradient-button-primary);
+    color: var(--color-white);
 }
 
 .jobs-table th,
 .jobs-table td {
-    padding: 0.75rem 0.9rem;
+    padding: var(--space-sm) var(--space-md);
     text-align: center;
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
 }
 
 .jobs-table tbody tr:nth-child(even) {
-    background: #f4f6f7;
-}
-
-.jobs-table tbody tr:hover {
-    background: #e9ecef;
+    background: var(--color-gray-light);
 }
 
 .jobs-table button {
-    padding: 0.4rem 0.7rem;
-    border-radius: 8px;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
     border: none;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 0.85rem;
-    background: linear-gradient(135deg, #203a43, #2c5364);
-    color: #ffffff;
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-xs);
+    background: var(--gradient-button-primary);
+    color: var(--color-white);
     transition: all 0.2s ease;
 }
 
@@ -87,27 +83,27 @@
     }
 
     .jobs-table tr {
-        margin-bottom: 1rem;
-        border-radius: 10px;
-        background: #ffffff;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        margin-bottom: var(--space-md);
+        border-radius: var(--radius-lg);
+        background: var(--color-white);
+        box-shadow: var(--shadow-xl);
     }
 
     .jobs-table td {
         position: relative;
-        padding: 0.7rem;
+        padding: var(--space-sm);
         padding-left: 45%;
         text-align: left;
-        font-size: 0.9rem;
+        font-size: var(--font-size-sm);
     }
 
     .jobs-table td::before {
         content: attr(data-label);
         position: absolute;
-        left: 0.7rem;
+        left: var(--space-sm);
         width: 40%;
-        font-weight: 600;
-        color: #203a43;
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-primary-500);
         text-align: left;
         white-space: nowrap;
     }
@@ -161,11 +157,16 @@
 */
 @media screen and (min-width: 1200px) {
     .worker-dashboard h2 { 
-        font-size: 2.5rem; 
+        font-size: var(--font-size-title); 
     }
     
     .jobs-table th,
     .jobs-table td { 
-        font-size: 1.2rem; 
+        font-size: var(--font-size-lg); 
+    }
+
+    .jobs-table {
+        width: 95%;
+        margin: 0 auto;
     }
 }/*1200px*/
