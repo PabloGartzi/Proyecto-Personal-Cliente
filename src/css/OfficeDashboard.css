@@ -15,10 +15,16 @@
     color: var(--color-white);
 }
 
-.office-dashboard h3 {
+.office-dashboard .estadisticas h3 {
     margin: var(--space-xl) 0 var(--space-md);
     font-weight: var(--font-weight-medium);
     color: var(--color-white);
+}
+
+.titulo-mapa {
+    margin: var(--space-xl) 0 var(--space-md);
+    font-size: var(--font-size-lg);
+    text-align: center;
 }
 
 .estadisticas {
@@ -28,52 +34,31 @@
     margin-bottom: var(--space-xl);
 }
 
-.stat-card {
-    background: var(--color-white);
-    color: var(--color-text-dark);
-    border-radius: var(--radius-xl);
-    padding: var(--space-md) 1.2rem;
-    flex: 1 1 150px;
-    box-shadow: var(--shadow-md);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.stat-card h3 {
-    text-transform: capitalize;
-    margin-bottom: var(--space-xs);
-    font-size: var(--font-size-md);
-    color: var(--color-primary-700);
-}
-
-.stat-card p {
-    font-size: 1.2rem;
-    font-weight: var(--font-weight-semibold);
-    margin: 0;
-}
 
 .office-create-work {
     margin: var(--space-lg) 0;
 }
 
 .office-search {
-    margin: var(--space-lg) 0;
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin: var(--space-lg) auto;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .office-search input {
-    width: 100%;
+    width: 30%;
     max-width: 400px;
     padding: 0.7rem 1rem;
     border-radius: var(--radius-xl);
     border: 1px solid var(--color-gray-medium);
     font-size: var(--font-size-md);
     outline: none;
-    transition: all 0.3s ease;
 }
 
 .office-search input::placeholder {
@@ -83,6 +68,18 @@
 .office-search input:focus {
     border-color: var(--color-primary-500);
     box-shadow: 0 0 10px rgba(44, 83, 100, 0.4);
+}
+
+.office-search select {
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    color: var(--color-primary-900);
+    font-size: var(--font-size-md);
+}
+.office-search select option {
+    padding: 0.5rem;
+    background-color: white;
+    color: var(--color-primary-900);
 }
 
 .btn-create-work {
@@ -202,6 +199,10 @@
     .office-dashboard { 
         padding: var(--space-xl); 
     }
+    
+    .office-dashboard h3 { 
+        font-size: 1.8rem; 
+    }
 
     .works-table th,
     .works-table td { 
@@ -214,7 +215,7 @@
                         992px
 < ===================================================== >
 */
-@media screen and (min-width:992px) {
+@media screen and (min-width:1040px) {
     .office-dashboard h2 { 
         font-size: 2.2rem; 
     }
@@ -242,6 +243,10 @@
     .works-table {
         width: 95%;
         margin: auto;
+    }
+    .office-search {
+        width: 95%;
+        margin: var(--space-lg) auto;
     }
     
     .estadisticas {

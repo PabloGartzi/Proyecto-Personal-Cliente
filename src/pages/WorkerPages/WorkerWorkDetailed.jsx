@@ -278,7 +278,7 @@ export const WorkerWorkDetailed = () => {
                                 <td data-label="ID reporte">{report.report_id}</td>
                                 <td data-label="ID trabajador">{report.worker_user_id}</td>
                                 <td data-label="Notas">{report.report_notes}</td>
-                                <td data-label="Fecha">{report.report_created_at}</td>
+                                <td data-label="Fecha">{new Date(report.report_created_at).toLocaleString()}</td>
                                 <td data-label="Acciones">
                                     <button onClick={() => handleEdit(report)}>Editar reporte</button>
                                     <button onClick={() => abrirVentanaModal(report)}>Eliminar</button>

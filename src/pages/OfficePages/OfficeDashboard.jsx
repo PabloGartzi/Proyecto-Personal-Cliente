@@ -25,7 +25,10 @@ export const OfficeDashboard = () => {
     const [ventanaModal, setVentanaModal] = useState(false);
     const [borrarWork, setBorrarWork] = useState(null);
 
-    const [busqueda, setBusqueda] = useState("");
+    const [busquedaTitulo, setBusquedaTitulo] = useState("");
+    const [busquedaEmail, setBusquedaEmail] = useState("");
+    const [busquedaFecha, setBusquedaFecha] = useState("");
+    const [busquedaEstado, setBusquedaEstado] = useState("");
 
 
     // Modal de confirmación
@@ -173,9 +176,21 @@ export const OfficeDashboard = () => {
     }, [cookies.token]);
 
     const trabajosFiltrados = works.filter(work => 
-        `${work.job_title} ${work.job_description} ${work.job_status} ${work.assigned_worker_user_email}`
+        `${work.assigned_worker_user_email}`
             .toLowerCase()
-            .includes(busqueda.toLowerCase().trim())
+            .includes(busquedaEmail.toLowerCase().trim())
+        &&
+        `${work.job_title}`
+            .toLowerCase()
+            .includes(busquedaTitulo.toLowerCase().trim())
+        &&
+        `${new Date(work.job_created_at).toLocaleString()}`
+            .toLowerCase()
+            .includes(busquedaFecha.toLowerCase().trim())
+        &&
+        `${work.job_status}`
+            .toLowerCase()
+            .includes(busquedaEstado.toLowerCase().trim())
     );
 
     if (loadingWorks || loadingStats) return <p>Cargando trabajos...</p>;
@@ -210,12 +225,15 @@ export const OfficeDashboard = () => {
                 </button>
             </div>
             <div className="office-search">
-                <input
-                    type="text"
-                    placeholder="Buscar trabajos..."
-                    value={busqueda}
-                    onChange={(e) => setBusqueda(e.target.value)}
-                />
+                <input type="text" placeholder="Filtrar por titulo" value={busquedaTitulo} onChange={(e) => setBusquedaTitulo(e.target.value)} />
+                <input type="text" placeholder="Filtrar por email" value={busquedaEmail} onChange={(e) => setBusquedaEmail(e.target.value)} />
+                <input type="text" placeholder="Filtrar por fecha" value={busquedaFecha} onChange={(e) => setBusquedaFecha(e.target.value)} />
+                <select name="job_status" onChange={(e) => setBusquedaEstado(e.target.value)}>
+                    <option value="">No filtrar</option>
+                    <option value="pendiente">pendiente</option>
+                    <option value="en curso">en curso</option>
+                    <option value="completado">completado</option>
+                </select>
             </div>
             <table className="works-table">
                 <thead>
@@ -260,8 +278,8 @@ export const OfficeDashboard = () => {
                 </tbody>
             </table>
 
-            <h3>Mapa de trabajos</h3>
-            <WorksMap works={works} />
+            <h3 className='titulo-mapa'>Mapa de trabajos</h3>
+            <WorksMap works={trabajosFiltrados} />
 
             {ventanaModal && (
                 <div className="modal-borrar">

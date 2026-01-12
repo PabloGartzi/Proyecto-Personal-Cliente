@@ -39,7 +39,7 @@ export const WorksMap = ({ works }) => {
                     {work.job_title}<br />
                     Estado: {work.job_status}<br />
                     Dirección: {work.job_address}<br />
-                    Trabajador: {work.worker_name || work.assigned_worker_user_id || '-'}
+                    Trabajador: {work.worker_name || work.assigned_worker_user_email || '-'}
                 </Popup>
                 </CircleMarker>
             ))}

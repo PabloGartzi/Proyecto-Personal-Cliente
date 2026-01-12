@@ -4,15 +4,15 @@
 
 .worker-dashboard {
     min-height: 100vh;
-    padding: var(--space-lg) var(--space-md);
+    padding: var(--space-lg);
     background: var(--gradient-primary);
     color: var(--color-text-light);
 }
 
 .worker-dashboard h2 {
-    font-size: var(--font-size-xxl);
-    margin-bottom: var(--space-lg);
-    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: var(--space-md);
+    color: var(--color-white);
 }
 
 .worker-dashboard h3 {
@@ -140,6 +140,10 @@
 < ===================================================== >
 */
 @media screen and (min-width: 992px) {
+    .worker-dashboard { 
+        padding: var(--space-xl); 
+    }
+
     .worker-dashboard h2 { 
         font-size: 2.3rem; 
     }

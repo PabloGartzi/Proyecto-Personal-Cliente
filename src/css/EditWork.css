@@ -90,11 +90,11 @@
     
     .edit-work-form input,
     .edit-work-form select { 
-        font-size: var(--font-size-md); 
+        font-size: 1.05rem; 
     }
     
     .edit-work-form button { 
-        font-size: var(--font-size-md); 
+        font-size: 1.05rem; 
     }
 }/*500px*/
 
@@ -114,11 +114,11 @@
     
     .edit-work-form input,
     .edit-work-form select { 
-        font-size: var(--font-size-lg); 
+        font-size: 1.15rem; 
     }
     
     .edit-work-form button { 
-        font-size: var(--font-size-lg); 
+        font-size: 1.1rem; 
     }
 }/*768px*/
 
@@ -138,11 +138,11 @@
     
     .edit-work-form input,
     .edit-work-form select { 
-        font-size: var(--font-size-xl); 
+        font-size: 1.25rem; 
     }
     
     .edit-work-form button { 
-        font-size: var(--font-size-xl); 
+        font-size: 1.2rem; 
     }
 }/*992px*/
 
@@ -162,10 +162,10 @@
     
     .edit-work-form input,
     .edit-work-form select { 
-        font-size: var(--font-size-xxl); 
+        font-size: 1.35rem; 
     }
     
     .edit-work-form button { 
-        font-size: var(--font-size-xxl); 
+        font-size: 1.3rem; 
     }
 }/*1200px*/

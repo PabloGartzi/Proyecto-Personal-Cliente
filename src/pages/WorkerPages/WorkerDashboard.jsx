@@ -15,6 +15,10 @@ export const WorkerDashboard = () => {
     const [error, setError] = useState(null);
     const [cookies, setCookie] = useCookies(['token']);
 
+    const [busquedaTitulo, setBusquedaTitulo] = useState("");
+    const [busquedaFecha, setBusquedaFecha] = useState("");
+    const [busquedaEstado, setBusquedaEstado] = useState("");
+
     const fetchJobs = async () => {
         const decoded = jwtDecode(cookies.token);
         const id = decoded.uid;
@@ -57,6 +61,19 @@ export const WorkerDashboard = () => {
         fetchJobs();
     }, [cookies.token]);
 
+    const trabajosFiltrados = works.filter(work => 
+        `${work.job_title}`
+            .toLowerCase()
+            .includes(busquedaTitulo.toLowerCase().trim())
+        &&
+        `${new Date(work.job_created_at).toLocaleString()}`
+            .toLowerCase()
+            .includes(busquedaFecha.toLowerCase().trim())
+        &&
+        `${work.job_status}`
+            .toLowerCase()
+            .includes(busquedaEstado.toLowerCase().trim())
+    );
     if (loading) return <p>Cargando trabajos...</p>;
     if (error) return <p>{error}</p>;
 
@@ -65,6 +82,17 @@ export const WorkerDashboard = () => {
     <h2>Mis trabajos</h2>
     
     <LogoutButton/>
+
+    <div className="office-search">
+        <input type="text" placeholder="Filtrar por titulo" value={busquedaTitulo} onChange={(e) => setBusquedaTitulo(e.target.value)} />
+        <input type="text" placeholder="Filtrar por fecha" value={busquedaFecha} onChange={(e) => setBusquedaFecha(e.target.value)} />
+        <select name="job_status" onChange={(e) => setBusquedaEstado(e.target.value)}>
+            <option value="">No filtrar</option>
+            <option value="pendiente">pendiente</option>
+            <option value="en curso">en curso</option>
+            <option value="completado">completado</option>
+        </select>
+    </div>
     <table className="jobs-table">
         <thead>
             <tr>
@@ -72,20 +100,22 @@ export const WorkerDashboard = () => {
                 <th>Título</th>
                 <th>Descripción</th>
                 <th>Estado</th>
+                <th>Creado en</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            {works.length === 0 ? (
+            {trabajosFiltrados.length === 0 ? (
                 <tr>
                     <td colSpan="10">No hay trabajos</td>
                 </tr>
-            ) : (works.map(work => (
+            ) : (trabajosFiltrados.map(work => (
                     <tr key={work.job_id}>
                         <td data-label="ID">{work.job_id}</td>
                         <td data-label="Título">{work.job_title}</td>
                         <td data-label="Descripción">{work.job_description}</td>
                         <td data-label="Estado">{work.job_status}</td>
+                        <td data-label="Creado en">{new Date(work.job_created_at).toLocaleString()}</td>
                         <td data-label="Acciones">
                             <button onClick={() => handleDetailed(work)}>Abrir vista detallada</button>
                         </td>
@@ -95,7 +125,7 @@ export const WorkerDashboard = () => {
         </tbody>
     </table>
     <h3>Mapa de trabajos</h3>
-    <WorksMap works={works} />
+    <WorksMap works={trabajosFiltrados} />
     </div>
 );
 };

@@ -27,33 +27,6 @@
     margin-bottom: var(--space-xl);
 }
 
-.stat-card {
-    background: var(--color-white);
-    color: var(--color-text-dark);
-    border-radius: var(--radius-xl);
-    padding: var(--space-md) 1.2rem;
-    flex: 1 1 150px;
-    box-shadow: var(--shadow-md);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.stat-card h3 {
-    text-transform: capitalize;
-    margin-bottom: var(--space-xs);
-    font-size: var(--font-size-md);
-    color: var(--color-primary-700);
-}
-
-.stat-card p {
-    font-size: 1.2rem;
-    font-weight: var(--font-weight-semibold);
-    margin: 0;
-}
-
 .admin-create-user {
     margin: var(--space-lg) 0;
 }
