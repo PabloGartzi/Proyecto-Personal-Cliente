@@ -1,0 +1,207 @@
+/* =========================
+   ViewAlertsModal.css
+   ========================= */
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal-content {
+    background: var(--color-white);
+    padding: 2.5rem 2.8rem;
+    border-radius: var(--radius-xl);
+    width: 85%;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: var(--shadow-lg);
+    animation: fadeIn 0.5s ease-in-out;
+    position: relative;
+}
+
+.modal-content h2 {
+    margin-bottom: 1rem;
+    font-size: 1.6rem;
+    color: var(--color-primary-700) !important;
+    text-align: center;
+}
+
+.close-btn {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: var(--color-text-dark);
+}
+
+.alerts-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.alerts-list .alert {
+    background: var(--color-gray-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.alerts-list .alert strong {
+    color: var(--color-primary-700);
+    font-size: var(--font-size-md);
+}
+
+.alerts-list .alert p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-dark);
+}
+
+.alerts-list .alert small {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+}
+
+.delete-alert-btn {
+    align-self: flex-end;
+    margin-top: var(--space-xs);
+    background: var(--color-danger);
+    color: var(--color-white);
+    border: none;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    transition: all 0.2s ease-in-out;
+}
+
+.delete-alert-btn:hover {
+    background: var(--color-danger-dark);
+    transform: translateY(-1px);
+}
+
+/* 
+< ===================================================== >
+                        500px
+< ===================================================== >
+*/
+@media screen and (min-width: 500px) {
+    .modal-content h2 { 
+        font-size: 1.8rem; 
+    }
+    
+    .alerts-list .alert strong { 
+        font-size: 1.1rem; 
+    }
+    .alerts-list .alert p { 
+        font-size: 1rem; 
+    }
+    
+    .delete-alert-btn { 
+        font-size: 1rem; 
+    }
+}/* 500px */
+
+/* 
+< ===================================================== >
+                        768px
+< ===================================================== >
+*/
+@media screen and (min-width: 768px) {
+    .modal-content { 
+        width: 70%; 
+    }
+    
+    .modal-content h2 { 
+        font-size: 2rem; 
+    }
+    
+    .alerts-list .alert strong { 
+        font-size: 1.2rem; 
+    }
+    .alerts-list .alert p { 
+        font-size: 1.05rem; 
+    }
+    
+    .delete-alert-btn { 
+        font-size: 1.05rem; 
+    }
+}/* 768px */
+
+/* 
+< ===================================================== >
+                        992px
+< ===================================================== >
+*/
+@media screen and (min-width: 992px) {
+    .modal-content { 
+        width: 60%; 
+    }
+    
+    .modal-content h2 { 
+        font-size: 2.2rem; 
+    }
+    
+    .alerts-list .alert strong { 
+        font-size: 1.3rem; 
+    }
+    .alerts-list .alert p { 
+        font-size: 1.1rem; 
+    }
+    
+    .delete-alert-btn { 
+        font-size: 1.1rem; 
+    }
+}/* 992px */
+
+/* 
+< ===================================================== >
+                        1200px
+< ===================================================== >
+*/
+@media screen and (min-width: 1200px) {
+    .modal-content { 
+        width: 50%; 
+    }
+    
+    .modal-content h2 { 
+        font-size: 2.4rem; 
+    }
+    
+    .alerts-list .alert strong { 
+        font-size: 1.4rem; 
+    }
+    .alerts-list .alert p { 
+        font-size: 1.2rem; 
+    }
+    
+    .delete-alert-btn { 
+        font-size: 1.2rem; 
+    }
+}/* 1200px */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+}

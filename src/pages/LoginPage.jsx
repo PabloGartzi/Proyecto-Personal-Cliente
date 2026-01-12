@@ -29,6 +29,9 @@ export const LoginPage = () => {
             if (!res.ok) throw new Error("Error en la petición");
 
             const data = await res.json();
+
+            const userEmail = data.usuario.user_email;
+
             const token = data.token;
 
             const decoded = jwtDecode(token);
@@ -42,12 +45,12 @@ export const LoginPage = () => {
             });
 
             // Redirección según el rol del usuario que inicia sesión
-            if (rol == 'admin') {
-                navigate('/admin/dashboard');
-            } else if (rol == 'office') {
-                navigate('/office/dashboard');
+            if (rol === 'admin') {
+                navigate('/admin/dashboard', { state: { userEmail } });
+            } else if (rol === 'office') {
+                navigate('/office/dashboard', { state: { userEmail } });
             } else {
-                navigate('/worker/dashboard');
+                navigate('/worker/dashboard', { state: { userEmail } });
             }
 
         } catch (err) {

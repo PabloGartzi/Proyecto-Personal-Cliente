@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router';
 import { LogoutButton } from '../../components/LogoutButton';
+import { CreateAlertModal } from '../../components/CreateAlertModal';
 import { jwtDecode } from 'jwt-decode';
 import { WorksMap } from '../WorksMap';
 import '../../css/ModalBorrar.css';
@@ -29,6 +30,8 @@ export const OfficeDashboard = () => {
     const [busquedaEmail, setBusquedaEmail] = useState("");
     const [busquedaFecha, setBusquedaFecha] = useState("");
     const [busquedaEstado, setBusquedaEstado] = useState("");
+
+    const [showAlertModal, setShowAlertModal] = useState(false);
 
 
     // Modal de confirmación
@@ -219,6 +222,11 @@ export const OfficeDashboard = () => {
                     <p>{worksCompleted}</p>
                 </div>
             </div>
+            <div className="office-create-alert">
+                <button className="btn-create-alert" onClick={() => setShowAlertModal(true)}>
+                    + Crear alerta
+                </button>
+            </div>
             <div className="office-create-work">
                 <button className="btn-create-work" onClick={handleCreateWork}>
                     + Crear nuevo trabajo
@@ -290,6 +298,7 @@ export const OfficeDashboard = () => {
                     </div>
                 </div>
             )}
+            < CreateAlertModal isOpen={showAlertModal} onClose={() => setShowAlertModal(false)} token={cookies.token}/>
         </div>
     );
 };
