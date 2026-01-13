@@ -96,7 +96,7 @@
     615px Parche para móvil
 < ===================================================== >
 */
-@media (max-width: 615px) {
+@media (max-width: 915px) {
     .users-table thead {
         display: none;
     }
@@ -145,10 +145,10 @@
         padding: var(--space-xl); 
     }
 
-    .users-table th,
+    /* .users-table th,
     .users-table td { 
         padding: 0.8rem; 
-    }
+    } */
 }
 
 /* 

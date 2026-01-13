@@ -187,7 +187,7 @@ export const AdminDashboard = () => {
             ) : (
                 users.map(user => (
                 <tr key={user.user_id}>
-                    <td data-label="ID">{user.user_id}</td>
+                    <td data-label="ID">{user.user_uuid}</td>
                     <td data-label="Nombre">{user.user_name}</td>
                     <td data-label="Email">{user.user_email}</td>
                     <td data-label="Rol">{user.role_name}</td>

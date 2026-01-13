@@ -149,7 +149,7 @@
 /* < ===================================================== >
     920px Parche mobile para work-table y reports-table
 < ===================================================== > */
-@media (max-width: 920px) {
+@media (max-width: 1070px) {
     .work-table thead,
     .reports-table thead {
         display: none;

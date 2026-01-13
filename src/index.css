@@ -184,3 +184,47 @@ a:hover {
     font-weight: var(--font-weight-semibold) !important;
     margin: 0 !important;
 }
+
+.office-search {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin: var(--space-lg) auto;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    gap: 5px;
+}
+
+.office-search input {
+    width: 30%;
+    max-width: 400px;
+    padding: 0.7rem 1rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-gray-medium);
+    font-size: var(--font-size-md);
+    outline: none;
+}
+
+.office-search input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.office-search input:focus {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 10px rgba(44, 83, 100, 0.4);
+}
+
+.office-search select {
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    color: var(--color-primary-900);
+    font-size: var(--font-size-md);
+}
+.office-search select option {
+    padding: 0.5rem;
+    background-color: white;
+    color: var(--color-primary-900);
+}

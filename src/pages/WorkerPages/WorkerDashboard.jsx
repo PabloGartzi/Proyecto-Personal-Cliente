@@ -171,7 +171,7 @@ export const WorkerDashboard = () => {
                 </tr>
             ) : (trabajosFiltrados.map(work => (
                     <tr key={work.job_id}>
-                        <td data-label="ID">{work.job_id}</td>
+                        <td data-label="ID">{work.job_uuid}</td>
                         <td data-label="Título">{work.job_title}</td>
                         <td data-label="Descripción">{work.job_description}</td>
                         <td data-label="Estado">{work.job_status}</td>
