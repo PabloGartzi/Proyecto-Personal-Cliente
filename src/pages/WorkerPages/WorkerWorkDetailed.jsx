@@ -292,7 +292,7 @@ export const WorkerWorkDetailed = () => {
      * @function
      * @inner
      * @param {Object} report - Reporte a editar
-     */
+     */    
     const handleEdit = (report) => {
         navigate(`/worker/editReport/${report.report_id}`);
     };
@@ -358,7 +358,7 @@ export const WorkerWorkDetailed = () => {
                 <thead>
                     <tr>
                         <th>ID del reporte</th>
-                        <th>ID del trabajador</th>
+                        <th>Trabajador</th>
                         <th>Notas</th>
                         <th>Fecha de creación del reporte</th>
                         <th>Acciones</th>
@@ -371,8 +371,8 @@ export const WorkerWorkDetailed = () => {
                         </tr>
                     ) : (reports.map(report => (
                             <tr key={report.report_id}>
-                                <td data-label="ID reporte">{report.report_id}</td>
-                                <td data-label="ID trabajador">{report.worker_user_id}</td>
+                                <td data-label="ID reporte">{report.report_uuid}</td>
+                                <td data-label="Trabajador">{report.user_email}</td>
                                 <td data-label="Notas">{report.report_notes}</td>
                                 <td data-label="Fecha">{new Date(report.report_created_at).toLocaleString()}</td>
                                 <td data-label="Acciones">
