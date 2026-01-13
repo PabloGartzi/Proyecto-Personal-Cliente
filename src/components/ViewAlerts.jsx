@@ -1,6 +1,16 @@
 import React from "react";
 import '../css/ViewAlerts.css'
 
+/**
+ * Componente ViewAlerts
+ * Muestra una lista de alertas en un modal.
+ *
+ * Props:
+ * - alerts: array de alertas [{ alert_id, alert_title, alert_message, alert_created_at }]
+ * - onClose: función para cerrar el modal
+ * - onDeleteAlert: función para eliminar una alerta específica
+ * @returns {JSX.Element} - Componente de visualización de alertas
+ */
 export const ViewAlerts = ({ alerts, onClose, onDeleteAlert }) => {
   if (!alerts || alerts.length === 0) return null; // no pintar nada si no hay alertas
 

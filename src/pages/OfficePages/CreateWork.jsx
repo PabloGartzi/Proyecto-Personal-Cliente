@@ -5,10 +5,36 @@ import "../../css/CreateWork.css";
 
 const BASE_URL = import.meta.env.VITE_URL_BASE;
 
+/**
+ * Componente CreateWork
+ *
+ * Formulario para crear un nuevo trabajo en el sistema.
+ * Permite ingresar título, descripción, estado, dirección,
+ * coordenadas (latitud y longitud) y el email del trabajador
+ * asignado. Realiza la petición al backend y redirige al
+ * dashboard de oficina tras un registro exitoso.
+ *
+ * Estados disponibles:
+ * - "pendiente"
+ * - "en curso"
+ * - "completado"
+ *
+ * @component
+ * @returns {JSX.Element} Componente de creación de trabajo
+ */
 export const CreateWork = () => {
     const [cookies] = useCookies(['token']);
     const navigate = useNavigate();
 
+    /**
+     * Maneja el envío del formulario para crear un trabajo
+     *
+     * @function
+     * @inner
+     * @param {React.FormEvent<HTMLFormElement>} ev - Evento de envío del formulario
+     * @async
+     * @throws {Error} Si la petición al backend falla
+     */
     const handleSubmit = async (ev) => {
         ev.preventDefault();
 

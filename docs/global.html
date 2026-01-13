@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Global</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Global</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2></h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="AdminDashboard"><span class="type-signature">(constant) </span>AdminDashboard<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Componente AdminDashboardPanel de administración que permite:- Ver todos los usuarios- Ver estadísticas de usuarios por rol- Crear, editar y eliminar usuarios- Manejar la sesión actual (logout y token)
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="AdminPages_AdminDashboard.jsx.html">AdminPages/AdminDashboard.jsx</a>, <a href="AdminPages_AdminDashboard.jsx.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="CreateUser"><span class="type-signature">(constant) </span>CreateUser<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Componente CreateUserFormulario para crear un nuevo usuario en el sistema.Permite ingresar nombre, email, contraseña y rol, y realizala petición al backend para crear el usuario. Redirige aldashboard de administración tras un registro exitoso.Roles disponibles:- "admin"- "office"- "worker"
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="AdminPages_CreateUser.jsx.html">AdminPages/CreateUser.jsx</a>, <a href="AdminPages_CreateUser.jsx.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="CreateWork"><span class="type-signature">(constant) </span>CreateWork<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Componente CreateWorkFormulario para crear un nuevo trabajo en el sistema.Permite ingresar título, descripción, estado, dirección,coordenadas (latitud y longitud) y el email del trabajadorasignado. Realiza la petición al backend y redirige aldashboard de oficina tras un registro exitoso.Estados disponibles:- "pendiente"- "en curso"- "completado"
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OfficePages_CreateWork.jsx.html">OfficePages/CreateWork.jsx</a>, <a href="OfficePages_CreateWork.jsx.html#line25">line 25</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="EditUser"><span class="type-signature">(constant) </span>EditUser<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Componente EditUserFormulario para editar un usuario existente.Carga los datos del usuario seleccionado y permite:- Modificar nombre, email, contraseña y rol- Validar cambios- Redirigir al dashboard o forzar logout si el usuario modifica su propia cuentaRoles disponibles:- "admin"- "office"- "worker"
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="AdminPages_EditUser.jsx.html">AdminPages/EditUser.jsx</a>, <a href="AdminPages_EditUser.jsx.html#line27">line 27</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="EditWork"><span class="type-signature">(constant) </span>EditWork<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Componente EditWorkFormulario para editar un trabajo existente.Carga los datos del trabajo seleccionado y permite:- Modificar título, descripción, estado, dirección y coordenadas- Asignar el email del trabajador- Guardar los cambios mediante petición al backendEstados disponibles:- "pendiente"- "en curso"- "completado"
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OfficePages_EditWork.jsx.html">OfficePages/EditWork.jsx</a>, <a href="OfficePages_EditWork.jsx.html#line25">line 25</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="LoginPage"><span class="type-signature">(constant) </span>LoginPage<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Componente LoginPageRepresenta la página de inicio de sesión de la aplicación.Permite al usuario ingresar su email y contraseña, autenticarcon el backend, guardar el token en cookies y redirigir aldashboard correspondiente según su rol.Roles posibles: "admin", "office", "worker".
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="LoginPage.jsx.html">LoginPage.jsx</a>, <a href="LoginPage.jsx.html#line22">line 22</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="OfficeDashboard"><span class="type-signature">(constant) </span>OfficeDashboard<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Componente OfficeDashboardPanel de oficina que permite:- Ver todos los trabajos asignados- Ver estadísticas de trabajos (total, pendientes, en curso, completados)- Crear, editar y eliminar trabajos- Filtrar trabajos por título, email, fecha o estado- Descargar reportes PDF de los trabajos- Crear alertas mediante un modal
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OfficePages_OfficeDashboard.jsx.html">OfficePages/OfficeDashboard.jsx</a>, <a href="OfficePages_OfficeDashboard.jsx.html#line26">line 26</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="WorksMap"><span class="type-signature">(constant) </span>WorksMap<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Componente WorksMapMuestra un mapa con los trabajos proporcionados mediante markers.Cada marker representa un trabajo y se colorea según su estado:- "pendiente" → rojo- "en curso" → azul- "completado" → verde- otros → grisCalcula automáticamente el centro del mapa usando la media delas coordenadas de todos los trabajos y recenteriza el mapacuando cambia la lista de trabajos.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="WorksMap.jsx.html">WorksMap.jsx</a>, <a href="WorksMap.jsx.html#line26">line 26</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdminDashboard">AdminDashboard</a></li><li><a href="global.html#CreateUser">CreateUser</a></li><li><a href="global.html#CreateWork">CreateWork</a></li><li><a href="global.html#EditUser">EditUser</a></li><li><a href="global.html#EditWork">EditWork</a></li><li><a href="global.html#LoginPage">LoginPage</a></li><li><a href="global.html#OfficeDashboard">OfficeDashboard</a></li><li><a href="global.html#WorksMap">WorksMap</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jan 13 2026 13:05:30 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

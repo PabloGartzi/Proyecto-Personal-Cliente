@@ -4,9 +4,36 @@ import 'leaflet/dist/leaflet.css';
 import { RecenterMap } from '../helpers/RecenterMap';
 import "../css/WorksMap.css";
 
+/**
+ * Componente WorksMap
+ *
+ * Muestra un mapa con los trabajos proporcionados mediante markers.
+ * Cada marker representa un trabajo y se colorea según su estado:
+ * - "pendiente" → rojo
+ * - "en curso" → azul
+ * - "completado" → verde
+ * - otros → gris
+ *
+ * Calcula automáticamente el centro del mapa usando la media de
+ * las coordenadas de todos los trabajos y recenteriza el mapa
+ * cuando cambia la lista de trabajos.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Array<Object>} props.works - Lista de trabajos a mostrar
+ * @returns {JSX.Element} Componente que renderiza el mapa con markers
+ */
 export const WorksMap = ({ works }) => {
     if (!works.length) return <p className="works-map-empty">No hay trabajos para mostrar en el mapa</p>;
 
+    /**
+     * Devuelve el color correspondiente a un estado de trabajo
+     *
+     * @function
+     * @inner
+     * @param {string} status - Estado del trabajo
+     * @returns {string} Color asociado al estado
+     */
     const getColorByStatus = (status) => {
         switch (status) {
         case 'pendiente': return 'red';

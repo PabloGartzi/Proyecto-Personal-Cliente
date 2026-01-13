@@ -5,10 +5,35 @@ import "../../css/CreateUser.css";
 
 const BASE_URL = import.meta.env.VITE_URL_BASE;
 
+/**
+ * Componente CreateUser
+ *
+ * Formulario para crear un nuevo usuario en el sistema.
+ * Permite ingresar nombre, email, contraseña y rol, y realiza
+ * la petición al backend para crear el usuario. Redirige al
+ * dashboard de administración tras un registro exitoso.
+ *
+ * Roles disponibles:
+ * - "admin"
+ * - "office"
+ * - "worker"
+ *
+ * @component
+ * @returns {JSX.Element} Componente de creación de usuario
+ */
 export const CreateUser = () => {
     const [cookies] = useCookies(['token']);
     const navigate = useNavigate();
 
+    /**
+     * Maneja el envío del formulario para crear un usuario
+     *
+     * @function
+     * @inner
+     * @param {React.FormEvent<HTMLFormElement>} ev - Evento de envío del formulario
+     * @async
+     * @throws {Error} Si la petición al backend falla
+     */
     const handleSubmit = async (ev) => {
         ev.preventDefault();
 

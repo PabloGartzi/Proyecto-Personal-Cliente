@@ -1,6 +1,23 @@
 import React, { useState } from "react";
 import '../css/CreateAlertModal.css';
 
+/**
+ * Componente CreateAlertModal
+ *
+ * Modal para crear y enviar alertas a un trabajador.
+ * Permite ingresar:
+ * - Email del trabajador receptor
+ * - Título de la alerta
+ * - Mensaje de la alerta
+ * Envía la alerta al backend y cierra el modal al finalizar.
+ *
+ * @component
+ * @param {Object} props
+ * @param {boolean} props.isOpen - Determina si el modal se muestra o no
+ * @param {Function} props.onClose - Función para cerrar el modal
+ * @param {string} props.token - Token JWT para autenticación
+ * @returns {JSX.Element|null} Modal de creación de alerta
+ */
 export const CreateAlertModal = ({ isOpen, onClose, token }) => {
     const [receiverEmail, setReceiverEmail] = useState("");
     const [title, setTitle] = useState("");
@@ -9,6 +26,16 @@ export const CreateAlertModal = ({ isOpen, onClose, token }) => {
 
     if (!isOpen) return null;
 
+    /**
+     * Envía la alerta al backend
+     *
+     * @async
+     * @function handleSendAlert
+     * @param {React.FormEvent<HTMLFormElement>} ev - Evento submit del formulario
+     * @throws {Error} Si ocurre un error al enviar la alerta
+     * @updates loading, receiverEmail, title, message
+     * @calls onClose() al finalizar el envío exitoso
+     */
     const handleSendAlert = async (ev) => {
         ev.preventDefault();
         setLoading(true);

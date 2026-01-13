@@ -11,6 +11,25 @@ import '../../css/WorkerDashboard.css'
 
 const BASE_URL = import.meta.env.VITE_URL_BASE;
 
+/**
+ * Componente WorkerDashboard
+ *
+ * Panel de trabajador que permite:
+ * - Ver todos los trabajos asignados
+ * - Filtrar trabajos por título, fecha o estado
+ * - Abrir vista detallada de un trabajo
+ * - Visualizar trabajos en un mapa
+ * - Recibir alertas en tiempo real mediante sockets
+ * - Gestionar alertas (ver y eliminar)
+ *
+ * Estados disponibles de trabajo:
+ * - "pendiente"
+ * - "en curso"
+ * - "completado"
+ *
+ * @component
+ * @returns {JSX.Element} Componente del panel de trabajador
+ */
 export const WorkerDashboard = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
@@ -30,6 +49,13 @@ export const WorkerDashboard = () => {
         setAlerts(prev => [alert, ...prev]);
     });
 
+    /**
+     * Obtiene los trabajos asignados al trabajador desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
     const fetchJobs = async () => {
         const decoded = jwtDecode(cookies.token);
         const id = decoded.uid;
@@ -56,7 +82,14 @@ export const WorkerDashboard = () => {
             setLoading(false);
         }
     };
-    
+
+    /**
+     * Obtiene las alertas del trabajador desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
     const fetchAlerts = async () => {
         try {
             const res = await fetch(`${BASE_URL}/alerts/get`, {
@@ -76,6 +109,14 @@ export const WorkerDashboard = () => {
         }
     };
 
+    /**
+     * Elimina una alerta por su ID
+     *
+     * @function
+     * @inner
+     * @param {number|string} alertId - ID de la alerta a eliminar
+     * @async
+     */
     const handleDeleteAlert = async (alertId) => {
         try {
             const res = await fetch(`${BASE_URL}/alerts/${alertId}`, {
@@ -98,6 +139,13 @@ export const WorkerDashboard = () => {
         }
     };
 
+    /**
+     * Navega a la vista detallada de un trabajo
+     *
+     * @function
+     * @inner
+     * @param {Object} work - Trabajo a ver detalladamente
+     */
     const handleDetailed = (work) => {
         //Si pasaramos en parametros el job_id tendríamos un problema de seguridad:
         // Cualquier trabajador podría acceder a los trabajos de otro...

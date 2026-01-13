@@ -5,13 +5,36 @@ import "../../css/EditWork.css";
 
 const BASE_URL = import.meta.env.VITE_URL_BASE;
 
+/**
+ * Componente EditWork
+ *
+ * Formulario para editar un trabajo existente.
+ * Carga los datos del trabajo seleccionado y permite:
+ * - Modificar título, descripción, estado, dirección y coordenadas
+ * - Asignar el email del trabajador
+ * - Guardar los cambios mediante petición al backend
+ *
+ * Estados disponibles:
+ * - "pendiente"
+ * - "en curso"
+ * - "completado"
+ *
+ * @component
+ * @returns {JSX.Element} Componente de edición de trabajo
+ */
 export const EditWork = () => {
     const { id } = useParams();
     const [cookies] = useCookies(['token']);
     const [form, setForm] = useState(null);
     const navigate = useNavigate();
 
-    // Traer los datos del trabajo
+    /**
+     * Obtiene los datos del trabajo desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
     const fetchWork = async () => {
         try {
         const res = await fetch(`${BASE_URL}/office/dashboard/${id}`, {
@@ -38,11 +61,27 @@ export const EditWork = () => {
         }
     };
 
+    /**
+     * Maneja los cambios en los campos del formulario
+     *
+     * @function
+     * @inner
+     * @param {React.ChangeEvent<HTMLInputElement | HTMLSelectElement>} ev - Evento de cambio de campo
+     */
     const handleChange = (ev) => {
         const { name, value } = ev.target;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
+    /**
+     * Maneja el envío del formulario para actualizar el trabajo
+     *
+     * @function
+     * @inner
+     * @param {React.FormEvent<HTMLFormElement>} ev - Evento de envío del formulario
+     * @async
+     * @throws {Error} Si la petición al backend falla
+     */
     const handleSubmit = async (ev) => {
         ev.preventDefault();
         if (!form) return;

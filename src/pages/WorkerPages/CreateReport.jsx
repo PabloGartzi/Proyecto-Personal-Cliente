@@ -7,6 +7,17 @@ import "../../css/CreateReport.css";
 
 const BASE_URL = import.meta.env.VITE_URL_BASE;
 
+/**
+ * Componente CreateReport
+ *
+ * Permite a un trabajador:
+ * - Crear un nuevo reporte asociado a un trabajo
+ * - Ingresar notas de texto
+ * - Subir una imagen asociada al reporte
+ *
+ * @component
+ * @returns {JSX.Element} Formulario para crear un nuevo reporte
+ */
 export const CreateReport = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
@@ -14,6 +25,13 @@ export const CreateReport = () => {
 
     const [error, setError] = useState(null);
     
+    /**
+     * Envía los datos del reporte al backend
+     *
+     * @async
+     * @function
+     * @param {React.FormEvent<HTMLFormElement>} ev - Evento de submit del formulario
+     */
     const handleSubmit = async (ev) => {
         ev.preventDefault();
 

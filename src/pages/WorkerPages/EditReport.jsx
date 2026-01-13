@@ -7,6 +7,18 @@ import "../../css/ModalErrorReporte.css"
 
 const BASE_URL = import.meta.env.VITE_URL_BASE;
 
+/**
+ * Componente EditReport
+ *
+ * Permite a un trabajador:
+ * - Visualizar un reporte existente
+ * - Editar las notas del reporte
+ * - Cambiar o subir una nueva imagen asociada
+ * - Manejar permisos (solo el propietario puede actualizar)
+ *
+ * @component
+ * @returns {JSX.Element} Formulario para editar un reporte
+ */
 export const EditReport = () => {
     const { report_id } = useParams();
     const [cookies] = useCookies(['token']);
@@ -16,7 +28,15 @@ export const EditReport = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState("");
 
-    // Traer los datos del reporte
+
+    /**
+     * Trae los datos del reporte desde el backend usando el report_id
+     *
+     * @async
+     * @function fetchReport
+     * @throws {Error} Si no se puede obtener el reporte
+     * @updates form
+     */
     const fetchReport = async () => {
         try {
             const res = await fetch(`${BASE_URL}/worker/getReportById/${report_id}`, {
@@ -38,11 +58,27 @@ export const EditReport = () => {
         }
     };
 
+    /**
+     * Actualiza el estado del formulario cuando cambian los campos
+     *
+     * @function handleChange
+     * @param {React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>} ev - Evento de cambio del input o textarea
+     * @updates form
+     */
     const handleChange = (ev) => {
         const { name, value } = ev.target;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
+    /**
+     * Envía los cambios del reporte al backend
+     *
+     * @async
+     * @function handleSubmit
+     * @param {React.FormEvent<HTMLFormElement>} ev - Evento submit del formulario
+     * @throws {Error} Si ocurre un error al actualizar
+     * @checks permisos - Muestra popup si el usuario no es el propietario
+     */
     const handleSubmit = async (ev) => {
         ev.preventDefault();
         if (!form) return;

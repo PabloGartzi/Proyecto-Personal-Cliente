@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: OfficePages/EditWork.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: OfficePages/EditWork.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useCookies } from 'react-cookie';
+import "../../css/EditWork.css";
+
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
+/**
+ * Componente EditWork
+ *
+ * Formulario para editar un trabajo existente.
+ * Carga los datos del trabajo seleccionado y permite:
+ * - Modificar título, descripción, estado, dirección y coordenadas
+ * - Asignar el email del trabajador
+ * - Guardar los cambios mediante petición al backend
+ *
+ * Estados disponibles:
+ * - "pendiente"
+ * - "en curso"
+ * - "completado"
+ *
+ * @component
+ * @returns {JSX.Element} Componente de edición de trabajo
+ */
+export const EditWork = () => {
+    const { id } = useParams();
+    const [cookies] = useCookies(['token']);
+    const [form, setForm] = useState(null);
+    const navigate = useNavigate();
+
+    /**
+     * Obtiene los datos del trabajo desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const fetchWork = async () => {
+        try {
+        const res = await fetch(`${BASE_URL}/office/dashboard/${id}`, {
+            headers: { Authorization: `Bearer ${cookies.token}` }
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.msg);
+        }
+        
+        setForm({
+            job_title: data.data.job_title,
+            job_description: data.data.job_description,
+            job_status: data.data.job_status,
+            job_address: data.data.job_address,
+            job_latitude: data.data.job_latitude,
+            job_longitude: data.data.job_longitude,
+            user_email: data.data.worker_email
+        });
+        } catch (error) {
+        console.log(error);
+        navigate('/office/dashboard');
+        }
+    };
+
+    /**
+     * Maneja los cambios en los campos del formulario
+     *
+     * @function
+     * @inner
+     * @param {React.ChangeEvent&lt;HTMLInputElement | HTMLSelectElement>} ev - Evento de cambio de campo
+     */
+    const handleChange = (ev) => {
+        const { name, value } = ev.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    /**
+     * Maneja el envío del formulario para actualizar el trabajo
+     *
+     * @function
+     * @inner
+     * @param {React.FormEvent&lt;HTMLFormElement>} ev - Evento de envío del formulario
+     * @async
+     * @throws {Error} Si la petición al backend falla
+     */
+    const handleSubmit = async (ev) => {
+        ev.preventDefault();
+        if (!form) return;
+
+        try {
+            const res = await fetch(`${BASE_URL}/office/updateWork/${id}`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${cookies.token}`
+                },
+                body: JSON.stringify(form)
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            navigate('/office/dashboard');
+
+        } catch (error) {
+            console.log(error);
+            alert(error);
+        }
+    };
+    
+    useEffect(() => {
+        fetchWork();
+    }, [id, cookies.token]);
+    
+    if (!form) return &lt;p>Cargando trabajo...&lt;/p>;
+
+    return (
+        &lt;div className="edit-work">
+        &lt;h2>Editar trabajo: {form.job_title}&lt;/h2>
+        &lt;form onSubmit={handleSubmit} className="edit-work-form">
+            &lt;input type="text" name="job_title" value={form.job_title} onChange={handleChange} placeholder="Título" required />
+            &lt;input type="text" name="job_description" value={form.job_description} onChange={handleChange} placeholder="Descripción" required />
+            &lt;select name="job_status" value={form.job_status} onChange={handleChange} required>
+                &lt;option value="pendiente">pendiente&lt;/option>
+                &lt;option value="en curso">en curso&lt;/option>
+                &lt;option value="completado">completado&lt;/option>
+            &lt;/select>
+            &lt;input type="text" name="job_address" value={form.job_address} onChange={handleChange} placeholder="Dirección" required />
+            &lt;input type="number" name="job_latitude" value={form.job_latitude} onChange={handleChange} placeholder="Latitud" required step="any" min="-90" max="90"/>
+            &lt;input type="number" name="job_longitude" value={form.job_longitude} onChange={handleChange} placeholder="Longitud" required step="any" min="-180" max="180"/>
+            &lt;input type="email" name="user_email" value={form.user_email} onChange={handleChange} placeholder="Email del trabajador" required/>
+            
+            &lt;button type="submit">Guardar cambios&lt;/button>
+            &lt;button type="button" onClick={() => navigate('/office/dashboard')}>
+                Cancelar
+            &lt;/button>
+        &lt;/form>
+        &lt;/div>
+    );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdminDashboard">AdminDashboard</a></li><li><a href="global.html#CreateUser">CreateUser</a></li><li><a href="global.html#CreateWork">CreateWork</a></li><li><a href="global.html#EditUser">EditUser</a></li><li><a href="global.html#EditWork">EditWork</a></li><li><a href="global.html#LoginPage">LoginPage</a></li><li><a href="global.html#OfficeDashboard">OfficeDashboard</a></li><li><a href="global.html#WorksMap">WorksMap</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jan 13 2026 13:05:30 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

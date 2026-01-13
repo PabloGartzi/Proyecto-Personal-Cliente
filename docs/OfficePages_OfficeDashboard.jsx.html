@@ -1,4 +1,32 @@
-import React, { useEffect, useState } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: OfficePages/OfficeDashboard.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: OfficePages/OfficeDashboard.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router';
 import { LogoutButton } from '../../components/LogoutButton';
@@ -257,123 +285,145 @@ export const OfficeDashboard = () => {
         `${work.assigned_worker_user_email}`
             .toLowerCase()
             .includes(busquedaEmail.toLowerCase().trim())
-        &&
+        &amp;&amp;
         `${work.job_title}`
             .toLowerCase()
             .includes(busquedaTitulo.toLowerCase().trim())
-        &&
+        &amp;&amp;
         `${new Date(work.job_created_at).toLocaleString()}`
             .toLowerCase()
             .includes(busquedaFecha.toLowerCase().trim())
-        &&
+        &amp;&amp;
         `${work.job_status}`
             .toLowerCase()
             .includes(busquedaEstado.toLowerCase().trim())
     );
 
-    if (loadingWorks || loadingStats) return <p>Cargando trabajos...</p>;
-    if (error) return <p>{error}</p>;
+    if (loadingWorks || loadingStats) return &lt;p>Cargando trabajos...&lt;/p>;
+    if (error) return &lt;p>{error}&lt;/p>;
 
     return (
-        <div className="office-dashboard">
-            <h2>Panel de Oficina</h2>
-            <LogoutButton />
+        &lt;div className="office-dashboard">
+            &lt;h2>Panel de Oficina&lt;/h2>
+            &lt;LogoutButton />
 
-            <div className="estadisticas">
-                <div className="stat-card">
-                    <h3>Total de trabajos:</h3>
-                    <p>{totalWorks}</p>
-                </div>
-                <div className="stat-card">
-                    <h3>Trabajos pendientes:</h3>
-                    <p>{worksPending}</p>
-                </div>
-                <div className="stat-card">
-                    <h3>Trabajos en curso:</h3>
-                    <p>{worksInProgress}</p>
-                </div>
-                <div className="stat-card">
-                    <h3>Trabajos completados:</h3>
-                    <p>{worksCompleted}</p>
-                </div>
-            </div>
-            <div className="office-create-alert">
-                <button className="btn-create-alert" onClick={() => setShowAlertModal(true)}>
+            &lt;div className="estadisticas">
+                &lt;div className="stat-card">
+                    &lt;h3>Total de trabajos:&lt;/h3>
+                    &lt;p>{totalWorks}&lt;/p>
+                &lt;/div>
+                &lt;div className="stat-card">
+                    &lt;h3>Trabajos pendientes:&lt;/h3>
+                    &lt;p>{worksPending}&lt;/p>
+                &lt;/div>
+                &lt;div className="stat-card">
+                    &lt;h3>Trabajos en curso:&lt;/h3>
+                    &lt;p>{worksInProgress}&lt;/p>
+                &lt;/div>
+                &lt;div className="stat-card">
+                    &lt;h3>Trabajos completados:&lt;/h3>
+                    &lt;p>{worksCompleted}&lt;/p>
+                &lt;/div>
+            &lt;/div>
+            &lt;div className="office-create-alert">
+                &lt;button className="btn-create-alert" onClick={() => setShowAlertModal(true)}>
                     + Crear alerta
-                </button>
-            </div>
-            <div className="office-create-work">
-                <button className="btn-create-work" onClick={handleCreateWork}>
+                &lt;/button>
+            &lt;/div>
+            &lt;div className="office-create-work">
+                &lt;button className="btn-create-work" onClick={handleCreateWork}>
                     + Crear nuevo trabajo
-                </button>
-            </div>
-            <div className="office-search">
-                <input type="text" placeholder="Filtrar por titulo" value={busquedaTitulo} onChange={(e) => setBusquedaTitulo(e.target.value)} />
-                <input type="text" placeholder="Filtrar por email" value={busquedaEmail} onChange={(e) => setBusquedaEmail(e.target.value)} />
-                <input type="text" placeholder="Filtrar por fecha" value={busquedaFecha} onChange={(e) => setBusquedaFecha(e.target.value)} />
-                <select name="job_status" onChange={(e) => setBusquedaEstado(e.target.value)}>
-                    <option value="">No filtrar</option>
-                    <option value="pendiente">pendiente</option>
-                    <option value="en curso">en curso</option>
-                    <option value="completado">completado</option>
-                </select>
-            </div>
-            <table className="works-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Título</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                        <th>Dirección</th>
-                        <th>Latitud</th>
-                        <th>Longitud</th>
-                        <th>Asignado a (email)</th>
-                        <th>Creado en</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
+                &lt;/button>
+            &lt;/div>
+            &lt;div className="office-search">
+                &lt;input type="text" placeholder="Filtrar por titulo" value={busquedaTitulo} onChange={(e) => setBusquedaTitulo(e.target.value)} />
+                &lt;input type="text" placeholder="Filtrar por email" value={busquedaEmail} onChange={(e) => setBusquedaEmail(e.target.value)} />
+                &lt;input type="text" placeholder="Filtrar por fecha" value={busquedaFecha} onChange={(e) => setBusquedaFecha(e.target.value)} />
+                &lt;select name="job_status" onChange={(e) => setBusquedaEstado(e.target.value)}>
+                    &lt;option value="">No filtrar&lt;/option>
+                    &lt;option value="pendiente">pendiente&lt;/option>
+                    &lt;option value="en curso">en curso&lt;/option>
+                    &lt;option value="completado">completado&lt;/option>
+                &lt;/select>
+            &lt;/div>
+            &lt;table className="works-table">
+                &lt;thead>
+                    &lt;tr>
+                        &lt;th>ID&lt;/th>
+                        &lt;th>Título&lt;/th>
+                        &lt;th>Descripción&lt;/th>
+                        &lt;th>Estado&lt;/th>
+                        &lt;th>Dirección&lt;/th>
+                        &lt;th>Latitud&lt;/th>
+                        &lt;th>Longitud&lt;/th>
+                        &lt;th>Asignado a (email)&lt;/th>
+                        &lt;th>Creado en&lt;/th>
+                        &lt;th>Acciones&lt;/th>
+                    &lt;/tr>
+                &lt;/thead>
+                &lt;tbody>
                     {trabajosFiltrados.length == 0 ? (
-                        <tr>
-                            <td colSpan="10">No hay trabajos</td>
-                        </tr>
+                        &lt;tr>
+                            &lt;td colSpan="10">No hay trabajos&lt;/td>
+                        &lt;/tr>
                     ) : (
                         trabajosFiltrados.map(work => (
-                            <tr key={work.job_id}>
-                                <td data-label="ID">{work.job_uuid}</td>
-                                <td data-label="Título">{work.job_title}</td>
-                                <td data-label="Descripción">{work.job_description}</td>
-                                <td data-label="Estado">{work.job_status}</td>
-                                <td data-label="Dirección">{work.job_address}</td>
-                                <td data-label="Latitud">{work.job_latitude}</td>
-                                <td data-label="Longitud">{work.job_longitude}</td>
-                                <td data-label="Asignado a">{work.assigned_worker_user_email || '-'}</td>
-                                <td data-label="Creado en">{new Date(work.job_created_at).toLocaleString()}</td>
-                                <td data-label="Acciones">
-                                    <button onClick={() => handleEdit(work)}>Editar</button>
-                                    <button onClick={() => abrirVentanaModal(work)}>Eliminar</button>
-                                    <button onClick={() => handleReports(work.job_id)}>Descargar Reportes</button>
-                                </td>
-                            </tr>
+                            &lt;tr key={work.job_id}>
+                                &lt;td data-label="ID">{work.job_uuid}&lt;/td>
+                                &lt;td data-label="Título">{work.job_title}&lt;/td>
+                                &lt;td data-label="Descripción">{work.job_description}&lt;/td>
+                                &lt;td data-label="Estado">{work.job_status}&lt;/td>
+                                &lt;td data-label="Dirección">{work.job_address}&lt;/td>
+                                &lt;td data-label="Latitud">{work.job_latitude}&lt;/td>
+                                &lt;td data-label="Longitud">{work.job_longitude}&lt;/td>
+                                &lt;td data-label="Asignado a">{work.assigned_worker_user_email || '-'}&lt;/td>
+                                &lt;td data-label="Creado en">{new Date(work.job_created_at).toLocaleString()}&lt;/td>
+                                &lt;td data-label="Acciones">
+                                    &lt;button onClick={() => handleEdit(work)}>Editar&lt;/button>
+                                    &lt;button onClick={() => abrirVentanaModal(work)}>Eliminar&lt;/button>
+                                    &lt;button onClick={() => handleReports(work.job_id)}>Descargar Reportes&lt;/button>
+                                &lt;/td>
+                            &lt;/tr>
                         ))
                     )}
-                </tbody>
-            </table>
+                &lt;/tbody>
+            &lt;/table>
 
-            <h3 className='titulo-mapa'>Mapa de trabajos</h3>
-            <WorksMap works={trabajosFiltrados} />
+            &lt;h3 className='titulo-mapa'>Mapa de trabajos&lt;/h3>
+            &lt;WorksMap works={trabajosFiltrados} />
 
-            {ventanaModal && (
-                <div className="modal-borrar">
-                    <div className="modal">
-                        <p>¿Estás seguro que quieres eliminar "{borrarWork.job_title}"?</p>
-                        <button onClick={confirmarBorrado}>Sí, eliminar</button>
-                        <button onClick={cerrarVentanaModal}>Cancelar</button>
-                    </div>
-                </div>
+            {ventanaModal &amp;&amp; (
+                &lt;div className="modal-borrar">
+                    &lt;div className="modal">
+                        &lt;p>¿Estás seguro que quieres eliminar "{borrarWork.job_title}"?&lt;/p>
+                        &lt;button onClick={confirmarBorrado}>Sí, eliminar&lt;/button>
+                        &lt;button onClick={cerrarVentanaModal}>Cancelar&lt;/button>
+                    &lt;/div>
+                &lt;/div>
             )}
-            < CreateAlertModal isOpen={showAlertModal} onClose={() => setShowAlertModal(false)} token={cookies.token}/>
-        </div>
+            &lt; CreateAlertModal isOpen={showAlertModal} onClose={() => setShowAlertModal(false)} token={cookies.token}/>
+        &lt;/div>
     );
-};
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdminDashboard">AdminDashboard</a></li><li><a href="global.html#CreateUser">CreateUser</a></li><li><a href="global.html#CreateWork">CreateWork</a></li><li><a href="global.html#EditUser">EditUser</a></li><li><a href="global.html#EditWork">EditWork</a></li><li><a href="global.html#LoginPage">LoginPage</a></li><li><a href="global.html#OfficeDashboard">OfficeDashboard</a></li><li><a href="global.html#WorksMap">WorksMap</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jan 13 2026 13:05:30 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

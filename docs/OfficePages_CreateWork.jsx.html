@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: OfficePages/CreateWork.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: OfficePages/CreateWork.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Link, useNavigate } from 'react-router';
+import { useCookies } from 'react-cookie';
+import React from 'react';
+import "../../css/CreateWork.css";
+
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
+/**
+ * Componente CreateWork
+ *
+ * Formulario para crear un nuevo trabajo en el sistema.
+ * Permite ingresar título, descripción, estado, dirección,
+ * coordenadas (latitud y longitud) y el email del trabajador
+ * asignado. Realiza la petición al backend y redirige al
+ * dashboard de oficina tras un registro exitoso.
+ *
+ * Estados disponibles:
+ * - "pendiente"
+ * - "en curso"
+ * - "completado"
+ *
+ * @component
+ * @returns {JSX.Element} Componente de creación de trabajo
+ */
+export const CreateWork = () => {
+    const [cookies] = useCookies(['token']);
+    const navigate = useNavigate();
+
+    /**
+     * Maneja el envío del formulario para crear un trabajo
+     *
+     * @function
+     * @inner
+     * @param {React.FormEvent&lt;HTMLFormElement>} ev - Evento de envío del formulario
+     * @async
+     * @throws {Error} Si la petición al backend falla
+     */
+    const handleSubmit = async (ev) => {
+        ev.preventDefault();
+
+        const job_title = ev.target.elements.job_title.value;
+        const job_description = ev.target.elements.job_description.value;
+        const job_status = ev.target.elements.job_status.value;
+        const job_address = ev.target.elements.job_address.value;
+        const job_latitude = ev.target.elements.job_latitude.value;
+        const job_longitude = ev.target.elements.job_longitude.value;
+        const user_email = ev.target.elements.user_email.value;
+        try {
+            const res = await fetch(`${BASE_URL}/office/createWork`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${cookies.token}`,
+                },
+                body: JSON.stringify({ job_title, job_description, job_status, job_address, job_latitude, job_longitude, user_email}),
+                credentials: 'include'
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            navigate('/office/dashboard');
+        } catch (error) {
+            console.log(error);
+            alert(error);
+        }
+    };
+    return (
+        &lt;div className="create-work">
+        &lt;h2>Crear trabajo nuevo&lt;/h2>
+        &lt;form onSubmit={handleSubmit} className="create-work-form">
+            &lt;input type="text" name="job_title" placeholder="Título" required />
+            &lt;input type="text" name="job_description" placeholder="Descripción" required />
+            &lt;select name="job_status" required>
+                &lt;option value="pendiente">pendiente&lt;/option>
+                &lt;option value="en curso">en curso&lt;/option>
+                &lt;option value="completado">completado&lt;/option>
+            &lt;/select>
+            &lt;input type="text" name="job_address" placeholder="Dirección" required />
+            &lt;input type="number" name="job_latitude" placeholder="Latitud" required step="any" min="-90" max="90"/>
+            &lt;input type="number" name="job_longitude" placeholder="Longitud" required step="any" min="-180" max="180"/>
+            &lt;input type="email" name="user_email" placeholder="Email del trabajador" required />
+            &lt;button type="submit">Guardar cambios&lt;/button>
+            &lt;button type="button" onClick={() => navigate('/office/dashboard')}>Cancelar&lt;/button>
+        &lt;/form>
+        &lt;/div>
+    );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdminDashboard">AdminDashboard</a></li><li><a href="global.html#CreateUser">CreateUser</a></li><li><a href="global.html#CreateWork">CreateWork</a></li><li><a href="global.html#EditUser">EditUser</a></li><li><a href="global.html#EditWork">EditWork</a></li><li><a href="global.html#LoginPage">LoginPage</a></li><li><a href="global.html#OfficeDashboard">OfficeDashboard</a></li><li><a href="global.html#WorksMap">WorksMap</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jan 13 2026 13:05:30 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

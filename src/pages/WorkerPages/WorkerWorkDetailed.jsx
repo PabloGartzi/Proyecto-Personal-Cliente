@@ -8,6 +8,21 @@ import "../../css/ModalErrorReporte.css"
 
 const BASE_URL = import.meta.env.VITE_URL_BASE;
 
+/**
+ * Componente WorkerWorkDetailed
+ *
+ * Permite al trabajador:
+ * - Visualizar los detalles de un trabajo específico
+ * - Actualizar el estado del trabajo ("pendiente", "en curso", "completado")
+ * - Ver todos los reportes asociados al trabajo
+ * - Crear un nuevo reporte
+ * - Descargar todos los reportes en PDF
+ * - Editar o eliminar reportes (si es propietario)
+ * - Mostrar mensajes de error si intenta eliminar reportes de otros
+ *
+ * @component
+ * @returns {JSX.Element} Componente de vista detallada de un trabajo
+ */
 export const WorkerWorkDetailed = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
@@ -26,22 +41,49 @@ export const WorkerWorkDetailed = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState("");
 
-
-// VENTANA MODAL PARA ELIMINAR REPORTES
+    /**
+     * Abre la ventana modal para confirmar eliminación de un reporte
+     *
+     * @function
+     * @inner
+     * @param {Object} report - Reporte a eliminar
+     */
     const abrirVentanaModal = (report) => {
         setBorrarReporte(report);
         setVentanaModal(true);
     };
+
+    /**
+     * Cierra la ventana modal de eliminación de reporte
+     *
+     * @function
+     * @inner
+     */
     const cerrarVentanaModal = () => {
         setBorrarReporte(null);
         setVentanaModal(false);
     };
+
+    /**
+     * Confirma la eliminación del reporte seleccionado
+     *
+     * @function
+     * @inner
+     * @async
+     */
     const confirmarBorrado = async () => {
         if (!borrarReporte) return;
         await handleDelete(borrarReporte.report_id);
         cerrarVentanaModal();
     };    
 
+    /**
+     * Obtiene la información del trabajo desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
     const fetchWork = async () => {
         try {
             const res = await fetch(
@@ -67,6 +109,13 @@ export const WorkerWorkDetailed = () => {
         }
     };
     
+    /**
+     * Obtiene los reportes asociados al trabajo desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
     const fetchReports = async () => {
         try {
             const res = await fetch(
@@ -92,11 +141,26 @@ export const WorkerWorkDetailed = () => {
         }
     };
 
+    /**
+     * Maneja los cambios de los inputs para actualizar el estado local del trabajo
+     *
+     * @function
+     * @inner
+     * @param {React.ChangeEvent<HTMLInputElement|HTMLSelectElement>} ev - Evento de cambio
+     */
     const handleChange = (ev) => {
         const { name, value } = ev.target;
         setWork((prev) => ({ ...prev, [name]: value }));
     };
 
+    /**
+     * Envía los cambios del trabajo al backend para actualizarlo
+     *
+     * @function
+     * @inner
+     * @async
+     * @param {React.FormEvent} ev - Evento submit del formulario
+     */
     const handleSubmit = async (ev) => {
         ev.preventDefault();
         try {
@@ -124,6 +188,14 @@ export const WorkerWorkDetailed = () => {
         }
     };
     
+    /**
+     * Descarga todos los reportes del trabajo como PDF
+     *
+     * @function
+     * @inner
+     * @async
+     * @param {number|string} id - ID del trabajo
+     */
     const handleReports = async (id) => {
         try {
             const res = await fetch(
@@ -158,6 +230,14 @@ export const WorkerWorkDetailed = () => {
         }
     };
 
+
+    /**
+     * Navega a la creación de un nuevo reporte para este trabajo
+     *
+     * @function
+     * @inner
+     * @param {Object} work - Trabajo para el cual se creará el reporte
+     */
     const handleCreateReport = (work) => {
         //Si pasaramos en parametros el job_id tendríamos un problema de seguridad:
         // Cualquier trabajador podría acceder a los trabajos de otro...
@@ -167,6 +247,15 @@ export const WorkerWorkDetailed = () => {
             }
         });
     };
+
+    /**
+     * Elimina un reporte específico si el trabajador es propietario
+     *
+     * @function
+     * @inner
+     * @async
+     * @param {number|string} id - ID del reporte a eliminar
+     */
     const handleDelete = async (id) => {
         // const confirm = window.confirm("¿Estás seguro que quieres eliminar este usuario?");
         // if (!confirm) return;
@@ -197,6 +286,13 @@ export const WorkerWorkDetailed = () => {
         }
     };
 
+    /**
+     * Navega a la edición de un reporte
+     *
+     * @function
+     * @inner
+     * @param {Object} report - Reporte a editar
+     */
     const handleEdit = (report) => {
         navigate(`/worker/editReport/${report.report_id}`);
     };
