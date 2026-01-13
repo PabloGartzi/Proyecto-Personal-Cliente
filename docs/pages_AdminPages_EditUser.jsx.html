@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/AdminPages/EditUser.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/AdminPages/EditUser.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useCookies } from 'react-cookie';
+import {jwtDecode} from "jwt-decode";
+import "../../css/EditUser.css";
+import "../../css/OfficeDashboard.css";
+
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
+/**
+ * Componente EditUser
+ *
+ * Formulario para editar un usuario existente.
+ * Carga los datos del usuario seleccionado y permite:
+ * - Modificar nombre, email, contraseña y rol
+ * - Validar cambios
+ * - Redirigir al dashboard o forzar logout si el usuario modifica su propia cuenta
+ *
+ * Roles disponibles:
+ * - "admin"
+ * - "office"
+ * - "worker"
+ *
+ * @component
+ * @returns {JSX.Element} Componente de edición de usuario
+ */
+export const EditUser = () => {
+    const { id } = useParams();
+    const [cookies, setCookie] = useCookies(['token']);
+    const [form, setForm] = useState(null);
+    const navigate = useNavigate();
+    
+    /**
+     * Obtiene los datos del usuario desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const fetchUser = async () => {
+        try {
+            const res = await fetch(`${BASE_URL}/admin/dashboard/${id}`, {
+                headers: { Authorization: `Bearer ${cookies.token}` }
+            });
+            const data = await res.json();
+            
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+
+            setForm({
+                user_name: data.data.user_name,
+                user_email: data.data.user_email,
+                password: '',
+                role: data.data.role_name
+            });
+        } catch (error) {
+            console.log(error)
+            navigate('/admin/dashboard');
+        }
+        };
+
+    /**
+     * Maneja el envío del formulario de edición
+     *
+     * @function
+     * @inner
+     * @param {React.FormEvent&lt;HTMLFormElement>} e - Evento de envío del formulario
+     * @async
+     * @throws {Error} Si la petición al backend falla
+     */
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!form) return;
+        try {
+            const res = await fetch(`${BASE_URL}/admin/updateUser/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${cookies.token}`
+                },
+                body: JSON.stringify({
+                    user_name: form.user_name || null,
+                    user_email: form.user_email || null,
+                    password: form.password || null,
+                    role: form.role || null
+                })
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+
+            const decoded = jwtDecode(cookies.token);
+            const currentUserId = decoded.uid;
+            if (parseInt(id) === currentUserId) {
+                setCookie('token', '', { path: '/' });
+                setCookie('rol', '', { path: '/' });
+                alert('Has modificado tu propio usuario. Debes iniciar sesión de nuevo.');
+                navigate('/login');
+            } else {
+                navigate('/admin/dashboard');
+            }
+        
+        } catch (error) {
+            console.log(error);
+            alert(error);
+        }
+    };
+
+    /**
+     * Maneja los cambios en los campos del formulario
+     *
+     * @function
+     * @inner
+     * @param {React.ChangeEvent&lt;HTMLInputElement | HTMLSelectElement>} ev - Evento de cambio de campo
+     */
+    const handleChange = (ev) => {
+        const { name, value } = ev.target;
+        setForm((formulario) => ({ ...formulario, [name]: value }));
+    };
+
+    useEffect(() => {
+        fetchUser();
+    }, [id, cookies.token, navigate]);
+
+
+    if (!form) return &lt;p>Cargando usuario...&lt;/p>;
+
+    return (
+        &lt;div className="edit-user">
+        &lt;h2>Editar usuario: {form.user_name}&lt;/h2>
+        &lt;form onSubmit={handleSubmit} className="edit-user-form">
+            &lt;input type="text" name="user_name" value={form.user_name} onChange={handleChange} placeholder="Nombre" required />
+            &lt;input type="email" name="user_email" value={form.user_email} onChange={handleChange} placeholder="Email" required />
+            &lt;input type="password" name="password" value={form.password} onChange={handleChange} placeholder="Nueva contraseña" />
+            &lt;select name="role" value={form.role} onChange={handleChange} required>
+            &lt;option value="admin">Admin&lt;/option>
+            &lt;option value="office">Office&lt;/option>
+            &lt;option value="worker">Worker&lt;/option>
+            &lt;/select>
+            &lt;button type="submit">Guardar cambios&lt;/button>
+            &lt;button type="button" onClick={() => navigate('/admin/dashboard')}>Cancelar&lt;/button>
+        &lt;/form>
+        &lt;/div>
+    );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdminDashboard">AdminDashboard</a></li><li><a href="global.html#CreateAlertModal">CreateAlertModal</a></li><li><a href="global.html#CreateReport">CreateReport</a></li><li><a href="global.html#CreateUser">CreateUser</a></li><li><a href="global.html#CreateWork">CreateWork</a></li><li><a href="global.html#EditReport">EditReport</a></li><li><a href="global.html#EditUser">EditUser</a></li><li><a href="global.html#EditWork">EditWork</a></li><li><a href="global.html#LoginPage">LoginPage</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#OfficeDashboard">OfficeDashboard</a></li><li><a href="global.html#ProtectedRoute">ProtectedRoute</a></li><li><a href="global.html#ViewAlerts">ViewAlerts</a></li><li><a href="global.html#WorkerDashboard">WorkerDashboard</a></li><li><a href="global.html#WorkerWorkDetailed">WorkerWorkDetailed</a></li><li><a href="global.html#WorksMap">WorksMap</a></li><li><a href="global.html#fetchReport">fetchReport</a></li><li><a href="global.html#handleChange">handleChange</a></li><li><a href="global.html#handleSendAlert">handleSendAlert</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jan 13 2026 13:31:21 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

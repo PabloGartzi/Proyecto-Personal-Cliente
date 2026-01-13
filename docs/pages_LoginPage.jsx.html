@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/LoginPage.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/LoginPage.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Link, useNavigate } from 'react-router';
+import React from 'react';
+import { jwtDecode } from "jwt-decode";
+import { useCookies } from 'react-cookie';
+import '../css/LoginPage.css';
+
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
+/**
+ * Componente LoginPage
+ *
+ * Representa la página de inicio de sesión de la aplicación.
+ * Permite al usuario ingresar su email y contraseña, autenticar
+ * con el backend, guardar el token en cookies y redirigir al
+ * dashboard correspondiente según su rol.
+ *
+ * Roles posibles: "admin", "office", "worker".
+ *
+ * @component
+ * @returns {JSX.Element} Componente de la página de login
+ */
+export const LoginPage = () => {
+    const navigate = useNavigate();
+    const [, setCookie] = useCookies(['token']);
+
+    /**
+     * Maneja el envío del formulario de login
+     *
+     * Realiza una petición POST al endpoint de login, decodifica
+     * el JWT recibido, guarda el token en las cookies y redirige
+     * al usuario según su rol.
+     *
+    * @function
+    * @inner
+    * @param {React.FormEvent&lt;HTMLFormElement>} ev - Evento del formulario
+    * @async
+    * @throws {Error} Si la petición al backend falla
+    */
+    const handleSubmit = async (ev) => {
+        ev.preventDefault();
+
+        const email = ev.target.elements.email.value;
+        const password = ev.target.elements.password.value;
+
+        const url = `${BASE_URL}/login`;
+        const options = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+            credentials: 'include'
+        };
+
+        try {
+            const res = await fetch(url, options);
+            if (!res.ok) throw new Error("Error en la petición");
+
+            const data = await res.json();
+
+            const userEmail = data.usuario.user_email;
+
+            const token = data.token;
+
+            const decoded = jwtDecode(token);
+            const rol = decoded.rol; // admin u office o worker
+
+            // Guardar token en las cookies
+            setCookie('token', token, {
+                path: '/',
+                maxAge: 60 * 60 * 24, // 1 día
+                sameSite: 'strict'
+            });
+
+            // Redirección según el rol del usuario que inicia sesión
+            if (rol === 'admin') {
+                navigate('/admin/dashboard', { state: { userEmail } });
+            } else if (rol === 'office') {
+                navigate('/office/dashboard', { state: { userEmail } });
+            } else {
+                navigate('/worker/dashboard', { state: { userEmail } });
+            }
+
+        } catch (err) {
+            console.error("Error login:", err);
+            alert("Error al iniciar sesión");
+        }
+    };
+
+    return (
+        &lt;div className='loginWrapper'>
+            &lt;h2 className="tituloApp">Airflow - Login&lt;/h2>
+
+            &lt;form className="formLogin" onSubmit={handleSubmit}>
+                &lt;label htmlFor="email">Email:&lt;/label>
+                &lt;input type="email" id="email" required />
+
+                &lt;label htmlFor="password">Contraseña:&lt;/label>
+                &lt;input type="password" id="password" required />
+
+                &lt;button type="submit" className="btn">Log in&lt;/button>
+            &lt;/form>
+        &lt;/div>
+    );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdminDashboard">AdminDashboard</a></li><li><a href="global.html#CreateAlertModal">CreateAlertModal</a></li><li><a href="global.html#CreateReport">CreateReport</a></li><li><a href="global.html#CreateUser">CreateUser</a></li><li><a href="global.html#CreateWork">CreateWork</a></li><li><a href="global.html#EditReport">EditReport</a></li><li><a href="global.html#EditUser">EditUser</a></li><li><a href="global.html#EditWork">EditWork</a></li><li><a href="global.html#LoginPage">LoginPage</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#OfficeDashboard">OfficeDashboard</a></li><li><a href="global.html#ProtectedRoute">ProtectedRoute</a></li><li><a href="global.html#ViewAlerts">ViewAlerts</a></li><li><a href="global.html#WorkerDashboard">WorkerDashboard</a></li><li><a href="global.html#WorkerWorkDetailed">WorkerWorkDetailed</a></li><li><a href="global.html#WorksMap">WorksMap</a></li><li><a href="global.html#fetchReport">fetchReport</a></li><li><a href="global.html#handleChange">handleChange</a></li><li><a href="global.html#handleSendAlert">handleSendAlert</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jan 13 2026 13:31:21 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

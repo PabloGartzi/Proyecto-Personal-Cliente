@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: components/LogoutButton.jsx</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,53 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: components/LogoutButton.jsx</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router";
+import "../css/LogoutButton.css"
 
+/**
+ * Componente LogoutButton
+ *
+ * Botón que permite al usuario cerrar sesión.
+ * Al hacer clic:
+ * - Elimina la cookie "token" (autenticación)
+ * - Redirige al usuario a la página principal "/"
+ *
+ * @component
+ * @returns {JSX.Element} Botón de logout
+ */
+export const LogoutButton = () => {
+  const [, , removeCookie] = useCookies(["token"]);
+  const navigate = useNavigate();
 
-    <h3> </h3>
+  /**
+   * Función que realiza el cierre de sesión
+   * - Elimina la cookie "token"
+   * - Redirige a la página principal usando useNavigate
+   */
+  const logout = () => {
+    removeCookie("token", { path: "/" });
+    navigate("/");
+  };
 
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+  return (
+    &lt;button className="btn-logout" onClick={logout}>
+      Logout
+    &lt;/button>
+  );
+};
+</code></pre>
+        </article>
+    </section>
 
 
 

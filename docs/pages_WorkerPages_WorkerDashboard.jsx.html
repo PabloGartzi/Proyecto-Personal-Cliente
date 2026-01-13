@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/WorkerPages/WorkerDashboard.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/WorkerPages/WorkerDashboard.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router';
+import { LogoutButton } from '../../components/LogoutButton';
+import { ViewAlerts } from '../../components/ViewAlerts';
+import {jwtDecode} from "jwt-decode";
+import { WorksMap } from '../WorksMap';
+import { useAlertsSocket } from "../../helpers/UseAlertsSocket";
+import { useLocation } from 'react-router';
+import '../../css/WorkerDashboard.css'
+
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
+/**
+ * Componente WorkerDashboard
+ *
+ * Panel de trabajador que permite:
+ * - Ver todos los trabajos asignados
+ * - Filtrar trabajos por título, fecha o estado
+ * - Abrir vista detallada de un trabajo
+ * - Visualizar trabajos en un mapa
+ * - Recibir alertas en tiempo real mediante sockets
+ * - Gestionar alertas (ver y eliminar)
+ *
+ * Estados disponibles de trabajo:
+ * - "pendiente"
+ * - "en curso"
+ * - "completado"
+ *
+ * @component
+ * @returns {JSX.Element} Componente del panel de trabajador
+ */
+export const WorkerDashboard = () => {
+    const { state } = useLocation();
+    const navigate = useNavigate();
+    const [works, setWorks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [cookies, setCookie] = useCookies(['token']);
+
+    const [busquedaTitulo, setBusquedaTitulo] = useState("");
+    const [busquedaFecha, setBusquedaFecha] = useState("");
+    const [busquedaEstado, setBusquedaEstado] = useState("");
+
+    const [alerts, setAlerts] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    useAlertsSocket(state?.userEmail, (alert) => {
+        setAlerts(prev => [alert, ...prev]);
+    });
+
+    /**
+     * Obtiene los trabajos asignados al trabajador desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const fetchJobs = async () => {
+        const decoded = jwtDecode(cookies.token);
+        const id = decoded.uid;
+        try {
+        const res = await fetch(`${BASE_URL}/worker/dashboard/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${cookies.token}`,
+            },
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.msg);
+        }
+        
+        setWorks(data.data);
+
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    /**
+     * Obtiene las alertas del trabajador desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const fetchAlerts = async () => {
+        try {
+            const res = await fetch(`${BASE_URL}/alerts/get`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${cookies.token}`,
+                },
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.msg);
+
+            setAlerts(data.alerts);
+        } catch (error) {
+            console.error("Error obteniendo alertas:", error);
+        }
+    };
+
+    /**
+     * Elimina una alerta por su ID
+     *
+     * @function
+     * @inner
+     * @param {number|string} alertId - ID de la alerta a eliminar
+     * @async
+     */
+    const handleDeleteAlert = async (alertId) => {
+        try {
+            const res = await fetch(`${BASE_URL}/alerts/${alertId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${cookies.token}`,
+                },
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            setAlerts(prevAlerts => prevAlerts.filter(alert => alert.alert_id !== alertId));
+
+        } catch (error) {
+            console.error(error);
+            alert("No se pudo eliminar la alerta");
+        }
+    };
+
+    /**
+     * Navega a la vista detallada de un trabajo
+     *
+     * @function
+     * @inner
+     * @param {Object} work - Trabajo a ver detalladamente
+     */
+    const handleDetailed = (work) => {
+        //Si pasaramos en parametros el job_id tendríamos un problema de seguridad:
+        // Cualquier trabajador podría acceder a los trabajos de otro...
+        navigate('/worker/work', {
+            state: {
+                jobId: work.job_id
+            }
+        });
+    };
+
+
+    useEffect(() => {
+        fetchJobs();
+        fetchAlerts();
+    }, [cookies.token]);
+
+    useEffect(() => {
+        if (alerts.length > 0) {
+            setIsModalOpen(true);
+        } else {
+            setIsModalOpen(false);
+        }
+    }, [alerts]);
+
+    const trabajosFiltrados = works.filter(work => 
+        `${work.job_title}`
+            .toLowerCase()
+            .includes(busquedaTitulo.toLowerCase().trim())
+        &amp;&amp;
+        `${new Date(work.job_created_at).toLocaleString()}`
+            .toLowerCase()
+            .includes(busquedaFecha.toLowerCase().trim())
+        &amp;&amp;
+        `${work.job_status}`
+            .toLowerCase()
+            .includes(busquedaEstado.toLowerCase().trim())
+    );
+    if (loading) return &lt;p>Cargando trabajos...&lt;/p>;
+    if (error) return &lt;p>{error}&lt;/p>;
+
+    return (
+    &lt;div className="worker-dashboard">
+    &lt;h2>Mis trabajos&lt;/h2>
+    
+    &lt;LogoutButton/>
+    &lt;div className="office-search">
+        &lt;input type="text" placeholder="Filtrar por titulo" value={busquedaTitulo} onChange={(e) => setBusquedaTitulo(e.target.value)} />
+        &lt;input type="text" placeholder="Filtrar por fecha" value={busquedaFecha} onChange={(e) => setBusquedaFecha(e.target.value)} />
+        &lt;select name="job_status" onChange={(e) => setBusquedaEstado(e.target.value)}>
+            &lt;option value="">No filtrar&lt;/option>
+            &lt;option value="pendiente">pendiente&lt;/option>
+            &lt;option value="en curso">en curso&lt;/option>
+            &lt;option value="completado">completado&lt;/option>
+        &lt;/select>
+    &lt;/div>
+    &lt;table className="jobs-table">
+        &lt;thead>
+            &lt;tr>
+                &lt;th>ID&lt;/th>
+                &lt;th>Título&lt;/th>
+                &lt;th>Descripción&lt;/th>
+                &lt;th>Estado&lt;/th>
+                &lt;th>Creado en&lt;/th>
+                &lt;th>Acciones&lt;/th>
+            &lt;/tr>
+        &lt;/thead>
+        &lt;tbody>
+            {trabajosFiltrados.length === 0 ? (
+                &lt;tr>
+                    &lt;td colSpan="10">No hay trabajos&lt;/td>
+                &lt;/tr>
+            ) : (trabajosFiltrados.map(work => (
+                    &lt;tr key={work.job_id}>
+                        &lt;td data-label="ID">{work.job_uuid}&lt;/td>
+                        &lt;td data-label="Título">{work.job_title}&lt;/td>
+                        &lt;td data-label="Descripción">{work.job_description}&lt;/td>
+                        &lt;td data-label="Estado">{work.job_status}&lt;/td>
+                        &lt;td data-label="Creado en">{new Date(work.job_created_at).toLocaleString()}&lt;/td>
+                        &lt;td data-label="Acciones">
+                            &lt;button onClick={() => handleDetailed(work)}>Abrir vista detallada&lt;/button>
+                        &lt;/td>
+                    &lt;/tr>
+                ))
+            )}
+        &lt;/tbody>
+    &lt;/table>
+    &lt;h3>Mapa de trabajos&lt;/h3>
+    &lt;WorksMap works={trabajosFiltrados} />
+    
+    {isModalOpen &amp;&amp; (
+    &lt;ViewAlerts
+        alerts={alerts}
+        onClose={() => setIsModalOpen(false)}
+        onDeleteAlert={handleDeleteAlert}
+    />
+    )}
+
+    &lt;/div>
+);
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdminDashboard">AdminDashboard</a></li><li><a href="global.html#CreateAlertModal">CreateAlertModal</a></li><li><a href="global.html#CreateReport">CreateReport</a></li><li><a href="global.html#CreateUser">CreateUser</a></li><li><a href="global.html#CreateWork">CreateWork</a></li><li><a href="global.html#EditReport">EditReport</a></li><li><a href="global.html#EditUser">EditUser</a></li><li><a href="global.html#EditWork">EditWork</a></li><li><a href="global.html#LoginPage">LoginPage</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#OfficeDashboard">OfficeDashboard</a></li><li><a href="global.html#ProtectedRoute">ProtectedRoute</a></li><li><a href="global.html#ViewAlerts">ViewAlerts</a></li><li><a href="global.html#WorkerDashboard">WorkerDashboard</a></li><li><a href="global.html#WorkerWorkDetailed">WorkerWorkDetailed</a></li><li><a href="global.html#WorksMap">WorksMap</a></li><li><a href="global.html#fetchReport">fetchReport</a></li><li><a href="global.html#handleChange">handleChange</a></li><li><a href="global.html#handleSendAlert">handleSendAlert</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jan 13 2026 13:31:21 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: components/ProtectedRoute.jsx</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,46 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: components/ProtectedRoute.jsx</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Navigate } from 'react-router';
+import { useCookies } from 'react-cookie';
+import { jwtDecode } from "jwt-decode";
 
+/**
+ * Componente ProtectedRoute
+ *
+ * Controla el acceso a rutas según el rol del usuario.
+ * - Recibe `children` (el componente a renderizar si está autorizado)
+ * - Recibe `allowedRoles` (array con roles permitidos)
+ *
+ * @param {JSX.Element} children - Componente protegido
+ * @param {Array&lt;string>} allowedRoles - Roles permitidos para acceder
+ * @returns {JSX.Element} - Children si autorizado, o &lt;Navigate> si no lo está
+ */
+export const ProtectedRoute = ({ children, allowedRoles }) => {
+  const [{ token }] = useCookies(['token']);
 
-    <h3> </h3>
+  // No hay token → me redirige al login
+  if (!token) return &lt;Navigate to="/login" replace />;
+  const decoded = jwtDecode(token);
+  const rol = decoded.rol; 
 
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+  // Rol no permitido → me redirige a home
+  if (allowedRoles &amp;&amp; allowedRoles.includes(rol)) return children;
+  
+  return &lt;Navigate to="/" replace />;
+}
+</code></pre>
+        </article>
+    </section>
 
 
 

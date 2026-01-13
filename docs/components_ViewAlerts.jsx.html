@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: components/ViewAlerts.jsx</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,60 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: components/ViewAlerts.jsx</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from "react";
+import '../css/ViewAlerts.css'
 
+/**
+ * Componente ViewAlerts
+ * Muestra una lista de alertas en un modal.
+ *
+ * Props:
+ * - alerts: array de alertas [{ alert_id, alert_title, alert_message, alert_created_at }]
+ * - onClose: función para cerrar el modal
+ * - onDeleteAlert: función para eliminar una alerta específica
+ * @returns {JSX.Element} - Componente de visualización de alertas
+ */
+export const ViewAlerts = ({ alerts, onClose, onDeleteAlert }) => {
+  if (!alerts || alerts.length === 0) return null; // no pintar nada si no hay alertas
 
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+  return (
+    &lt;div className="modal-overlay">
+      &lt;div className="modal-content">
+        &lt;h2>Alertas&lt;/h2>
+        &lt;button className="close-btn" onClick={onClose}>
+          X
+        &lt;/button>
+        &lt;ul className="alerts-list">
+          {alerts.map((alert) => (
+            &lt;li key={alert.alert_id} className="alert">
+              &lt;strong>{alert.alert_title}&lt;/strong>
+              &lt;p>{alert.alert_message}&lt;/p>
+              &lt;small>{new Date(alert.alert_created_at).toLocaleString()}&lt;/small>
+              &lt;button
+                className="delete-alert-btn"
+                onClick={() => onDeleteAlert(alert.alert_id)}
+              >
+                Eliminar alerta
+              &lt;/button>
+            &lt;/li>
+          ))}
+        &lt;/ul>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+</code></pre>
+        </article>
+    </section>
 
 
 

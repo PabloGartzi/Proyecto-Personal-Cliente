@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/WorkerPages/WorkerWorkDetailed.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/WorkerPages/WorkerWorkDetailed.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useLocation, useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import {jwtDecode} from "jwt-decode";
+import "../../css/ModalBorrar.css"
+import "../../css/WorkerWorkDetailed.css"
+import "../../css/ModalErrorReporte.css"
+
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
+/**
+ * Componente WorkerWorkDetailed
+ *
+ * Permite al trabajador:
+ * - Visualizar los detalles de un trabajo específico
+ * - Actualizar el estado del trabajo ("pendiente", "en curso", "completado")
+ * - Ver todos los reportes asociados al trabajo
+ * - Crear un nuevo reporte
+ * - Descargar todos los reportes en PDF
+ * - Editar o eliminar reportes (si es propietario)
+ * - Mostrar mensajes de error si intenta eliminar reportes de otros
+ *
+ * @component
+ * @returns {JSX.Element} Componente de vista detallada de un trabajo
+ */
+export const WorkerWorkDetailed = () => {
+    const { state } = useLocation();
+    const navigate = useNavigate();
+    const [cookies] = useCookies(['token']);
+
+    const [work, setWork] = useState(null);
+    const [reports, setReports] = useState([]);
+    const [loadingWork, setLoadingWork] = useState(true);
+    const [loadingReports, setLoadingReports] = useState(true);
+
+    const [error, setError] = useState(null);
+
+    const [ventanaModal, setVentanaModal] = useState(false);
+    const [borrarReporte, setBorrarReporte] = useState(null);
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
+
+    /**
+     * Abre la ventana modal para confirmar eliminación de un reporte
+     *
+     * @function
+     * @inner
+     * @param {Object} report - Reporte a eliminar
+     */
+    const abrirVentanaModal = (report) => {
+        setBorrarReporte(report);
+        setVentanaModal(true);
+    };
+
+    /**
+     * Cierra la ventana modal de eliminación de reporte
+     *
+     * @function
+     * @inner
+     */
+    const cerrarVentanaModal = () => {
+        setBorrarReporte(null);
+        setVentanaModal(false);
+    };
+
+    /**
+     * Confirma la eliminación del reporte seleccionado
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const confirmarBorrado = async () => {
+        if (!borrarReporte) return;
+        await handleDelete(borrarReporte.report_id);
+        cerrarVentanaModal();
+    };    
+
+    /**
+     * Obtiene la información del trabajo desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const fetchWork = async () => {
+        try {
+            const res = await fetch(
+                `${BASE_URL}/worker/work/${state.jobId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`,
+                    },
+                }
+            );
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            
+            setWork(data.data);
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        } finally {
+            setLoadingWork(false);
+        }
+    };
+    
+    /**
+     * Obtiene los reportes asociados al trabajo desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const fetchReports = async () => {
+        try {
+            const res = await fetch(
+                `${BASE_URL}/worker/viewWorkReport/${state.jobId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${cookies.token}`,
+                    },
+                }
+            );
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            
+            setReports(data.data);
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        } finally {
+            setLoadingReports(false);
+        }
+    };
+
+    /**
+     * Maneja los cambios de los inputs para actualizar el estado local del trabajo
+     *
+     * @function
+     * @inner
+     * @param {React.ChangeEvent&lt;HTMLInputElement|HTMLSelectElement>} ev - Evento de cambio
+     */
+    const handleChange = (ev) => {
+        const { name, value } = ev.target;
+        setWork((prev) => ({ ...prev, [name]: value }));
+    };
+
+    /**
+     * Envía los cambios del trabajo al backend para actualizarlo
+     *
+     * @function
+     * @inner
+     * @async
+     * @param {React.FormEvent} ev - Evento submit del formulario
+     */
+    const handleSubmit = async (ev) => {
+        ev.preventDefault();
+        try {
+            const res = await fetch(
+                `${BASE_URL}/worker/updateWork/${state.jobId}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${cookies.token}`,
+                    },
+                    body: JSON.stringify(work)
+                }
+            );
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            navigate('/worker/dashboard');
+
+        } catch (error) {
+            console.log("ERROR:", error)
+            alert(error);
+        }
+    };
+    
+    /**
+     * Descarga todos los reportes del trabajo como PDF
+     *
+     * @function
+     * @inner
+     * @async
+     * @param {number|string} id - ID del trabajo
+     */
+    const handleReports = async (id) => {
+        try {
+            const res = await fetch(
+                `${BASE_URL}/worker/workReport/${id}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${cookies.token}`,
+                    },
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            
+            const blob = await res.blob();// Convertimos la respuesta en un Blob
+            const url = window.URL.createObjectURL(blob); // Creamos una URL temporal
+            const a = document.createElement("a");// Creamos un enlace para descargar el pdf de la url que hemos creado
+            a.href = url;
+            a.download = `reportes_trabajo_${id}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();// Borramos en elnace una vez lo hemos usado para descargar el pdf
+            window.URL.revokeObjectURL(url);
+            // navigate('/worker/dashboard');
+
+        } catch (error) {
+            console.log("ERROR:", error)
+            alert(error);
+        }
+    };
+
+
+    /**
+     * Navega a la creación de un nuevo reporte para este trabajo
+     *
+     * @function
+     * @inner
+     * @param {Object} work - Trabajo para el cual se creará el reporte
+     */
+    const handleCreateReport = (work) => {
+        //Si pasaramos en parametros el job_id tendríamos un problema de seguridad:
+        // Cualquier trabajador podría acceder a los trabajos de otro...
+        navigate('/worker/createReport', {
+            state: {
+                jobId: work.job_id
+            }
+        });
+    };
+
+    /**
+     * Elimina un reporte específico si el trabajador es propietario
+     *
+     * @function
+     * @inner
+     * @async
+     * @param {number|string} id - ID del reporte a eliminar
+     */
+    const handleDelete = async (id) => {
+        // const confirm = window.confirm("¿Estás seguro que quieres eliminar este usuario?");
+        // if (!confirm) return;
+        const decoded = jwtDecode(cookies.token);
+        const uid = decoded.uid;
+        try {
+            const res = await fetch(`${BASE_URL}/worker/deleteReport/${id}/${uid}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${cookies.token}`,
+                },
+            });
+
+            const data = await res.json();
+            if (res.status === 403) {
+                setPopupMessage("No eres el propietario de este informe");
+                setShowPopup(true);
+                return;
+            }
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            setReports(reports.filter(report => report.report_id !== id));
+        } catch (error) {
+            console.error(error);
+            alert(error);
+        }
+    };
+
+    /**
+     * Navega a la edición de un reporte
+     *
+     * @function
+     * @inner
+     * @param {Object} report - Reporte a editar
+     */
+    const handleEdit = (report) => {
+        navigate(`/worker/editReport/${report.report_id}`);
+    };
+
+    useEffect(() => {
+        // Si se intenta entrar directamente sin state le manda para fuera. Asi evitamos fetch con undefined: Si ponemos la url /worker/work directamente por ejemplo
+        if (!state?.jobId) {
+            navigate('/worker/dashboard');
+            return;
+        }
+        fetchWork();
+        fetchReports();
+    }, [state, cookies.token, navigate]);
+
+    if (loadingWork || loadingReports) return &lt;p>Cargando...&lt;/p>;
+    if (!work) return &lt;p>No se pudo cargar el trabajo&lt;/p>;
+    if (error) return &lt;p>{error}&lt;/p>;
+
+
+    return (
+        &lt;div className="worker-work-detail">
+            &lt;h2>Detalle del trabajo&lt;/h2>
+            &lt;table className="work-table">
+                &lt;thead>
+                    &lt;tr>
+                        &lt;th>ID&lt;/th>
+                        &lt;th>Título&lt;/th>
+                        &lt;th>Descripción&lt;/th>
+                        &lt;th>Estado&lt;/th>
+                        &lt;th>Dirección&lt;/th>
+                        &lt;th>Latitud&lt;/th>
+                        &lt;th>Longitud&lt;/th>
+                        &lt;th>Creado en&lt;/th>
+                    &lt;/tr>
+                &lt;/thead>
+                &lt;tbody>
+                    &lt;tr>
+                        &lt;td data-label="ID">{work.job_uuid}&lt;/td>
+                        &lt;td data-label="Título">{work.job_title}&lt;/td>
+                        &lt;td data-label="Descripción">{work.job_description}&lt;/td>
+                        &lt;td data-label="Estado">{work.job_status}&lt;/td>
+                        &lt;td data-label="Dirección">{work.job_address}&lt;/td>
+                        &lt;td data-label="Latitud">{work.job_latitude}&lt;/td>
+                        &lt;td data-label="Longitud">{work.job_longitude}&lt;/td>
+                        &lt;td data-label="Creado en">{new Date(work.job_created_at).toLocaleString()}&lt;/td>
+                    &lt;/tr>
+                &lt;/tbody>
+            &lt;/table>
+
+            &lt;div className="update-status">
+                &lt;h3>Actualizar estado&lt;/h3>
+                &lt;form onSubmit={handleSubmit} className="update-work">
+                    &lt;select name="job_status" value={work.job_status} onChange={handleChange} required>
+                        &lt;option value="pendiente">pendiente&lt;/option>
+                        &lt;option value="en curso">en curso&lt;/option>
+                        &lt;option value="completado">completado&lt;/option>
+                    &lt;/select>
+                    &lt;button type="submit">Guardar cambios&lt;/button>
+                &lt;/form>
+            &lt;/div>
+            &lt;h3>Reportes del trabajo&lt;/h3>
+            &lt;table className="reports-table">
+                &lt;thead>
+                    &lt;tr>
+                        &lt;th>ID del reporte&lt;/th>
+                        &lt;th>ID del trabajador&lt;/th>
+                        &lt;th>Notas&lt;/th>
+                        &lt;th>Fecha de creación del reporte&lt;/th>
+                        &lt;th>Acciones&lt;/th>
+                    &lt;/tr>
+                &lt;/thead>
+                &lt;tbody>
+                    {reports.length === 0 ? (
+                        &lt;tr>
+                            &lt;td colSpan="10">No hay reportes&lt;/td>
+                        &lt;/tr>
+                    ) : (reports.map(report => (
+                            &lt;tr key={report.report_id}>
+                                &lt;td data-label="ID reporte">{report.report_id}&lt;/td>
+                                &lt;td data-label="ID trabajador">{report.worker_user_id}&lt;/td>
+                                &lt;td data-label="Notas">{report.report_notes}&lt;/td>
+                                &lt;td data-label="Fecha">{new Date(report.report_created_at).toLocaleString()}&lt;/td>
+                                &lt;td data-label="Acciones">
+                                    &lt;button onClick={() => handleEdit(report)}>Editar reporte&lt;/button>
+                                    &lt;button onClick={() => abrirVentanaModal(report)}>Eliminar&lt;/button>
+                                &lt;/td>
+                            &lt;/tr>
+                        ))
+                    )}
+                &lt;/tbody>
+            &lt;/table>
+            &lt;div className="download-reports">
+                &lt;h3>Descargar reportes&lt;/h3>
+                &lt;button onClick={() => handleReports(work.job_id)}>Descargar reportes&lt;/button>
+            &lt;/div>
+            &lt;div className="create-new-report">
+                &lt;h3>Crear nuevo reporte&lt;/h3>
+                &lt;button className="btn-create-report" onClick={() => handleCreateReport(work)}>+ Crear nuevo informe &lt;/button>
+            &lt;/div>
+            {ventanaModal &amp;&amp; (
+                &lt;div className="modal-borrar">
+                    &lt;div className="modal">
+                        &lt;p>¿Estás seguro que quieres eliminar el reporte {borrarReporte.report_id}?&lt;/p>
+                        &lt;button onClick={confirmarBorrado}>Sí, eliminar&lt;/button>
+                        &lt;button onClick={cerrarVentanaModal}>Cancelar&lt;/button>
+                    &lt;/div>
+                &lt;/div>
+            )}
+
+            {showPopup &amp;&amp; (
+                &lt;div className="popup-overlay">
+                    &lt;div className="popup">
+                        &lt;h3>Acción no permitida&lt;/h3>
+                        &lt;p>{popupMessage}&lt;/p>
+                        &lt;button onClick={() => setShowPopup(false)}>Cerrar&lt;/button>
+                    &lt;/div>
+                &lt;/div>
+            )}
+        &lt;/div>
+    );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdminDashboard">AdminDashboard</a></li><li><a href="global.html#CreateAlertModal">CreateAlertModal</a></li><li><a href="global.html#CreateReport">CreateReport</a></li><li><a href="global.html#CreateUser">CreateUser</a></li><li><a href="global.html#CreateWork">CreateWork</a></li><li><a href="global.html#EditReport">EditReport</a></li><li><a href="global.html#EditUser">EditUser</a></li><li><a href="global.html#EditWork">EditWork</a></li><li><a href="global.html#LoginPage">LoginPage</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#OfficeDashboard">OfficeDashboard</a></li><li><a href="global.html#ProtectedRoute">ProtectedRoute</a></li><li><a href="global.html#ViewAlerts">ViewAlerts</a></li><li><a href="global.html#WorkerDashboard">WorkerDashboard</a></li><li><a href="global.html#WorkerWorkDetailed">WorkerWorkDetailed</a></li><li><a href="global.html#WorksMap">WorksMap</a></li><li><a href="global.html#fetchReport">fetchReport</a></li><li><a href="global.html#handleChange">handleChange</a></li><li><a href="global.html#handleSendAlert">handleSendAlert</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jan 13 2026 13:31:21 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

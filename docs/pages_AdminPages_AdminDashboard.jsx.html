@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/AdminPages/AdminDashboard.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/AdminPages/AdminDashboard.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router';
+import { LogoutButton } from '../../components/LogoutButton';
+import {jwtDecode} from "jwt-decode";
+
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
+import "../../css/ModalBorrar.css"
+import "../../css/AdminDashboard.css"
+
+/**
+ * Componente AdminDashboard
+ *
+ * Panel de administración que permite:
+ * - Ver todos los usuarios
+ * - Ver estadísticas de usuarios por rol
+ * - Crear, editar y eliminar usuarios
+ * - Manejar la sesión actual (logout y token)
+ *
+ * @component
+ * @returns {JSX.Element} Componente del panel de administración
+ */
+export const AdminDashboard = () => {
+    const navigate = useNavigate();
+    const [users, setUsers] = useState([]);
+    const [loadingUsers, setLoadingUsers] = useState(true);
+    const [loadingStats, setLoadingStats] = useState(true);
+    const [error, setError] = useState(null);
+    const [cookies, setCookie] = useCookies(['token']);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [usersByRole, setUsersByRole] = useState([]);
+        
+    const [ventanaModal, setVentanaModal] = useState(false);
+    const [borrarUsuario, setBorrarUsuario] = useState(null);
+
+
+    /**
+     * Abre la ventana modal para confirmar eliminación de un usuario
+     *
+     * @function
+     * @inner
+     * @param {Object} user - Usuario a eliminar
+     */
+    const abrirVentanaModal = (user) => {
+        setBorrarUsuario(user);
+        setVentanaModal(true);
+    };
+
+    /**
+     * Cierra la ventana modal de eliminación
+     *
+     * @function
+     * @inner
+     */
+    const cerrarVentanaModal = () => {
+        setBorrarUsuario(null);
+        setVentanaModal(false);
+    };
+
+    /**
+     * Confirma la eliminación de un usuario
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const confirmarBorrado = async () => {
+        if (!borrarUsuario) return;
+        await handleDelete(borrarUsuario.user_id);
+        cerrarVentanaModal();
+    };
+
+    /**
+     * Obtiene las estadísticas de usuarios (total y por rol)
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const fetchStatistics = async () => {
+        try {
+        const res = await fetch(`${BASE_URL}/admin/statistics`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${cookies.token}`,
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error('Error al obtener usuarios');
+        }
+
+        const data = await res.json();
+        
+        setTotalUsers(data.data.total_users);
+        setUsersByRole(data.data.users_by_role);
+
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        } finally {
+            setLoadingStats(false);
+        }
+    };
+
+    /**
+     * Obtiene la lista de usuarios del backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const fetchUsers = async () => {
+        try {
+        const res = await fetch(`${BASE_URL}/admin/dashboard`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${cookies.token}`,
+            },
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) {
+            throw new Error(data.msg);
+        }
+
+        setUsers(data.data);
+
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        } finally {
+            setLoadingUsers(false);
+        }
+    };
+
+    /**
+     * Elimina un usuario por su ID
+     *
+     * @function
+     * @inner
+     * @param {number} id - ID del usuario a eliminar
+     * @async
+     */
+    const handleDelete = async (id) => {
+        // const confirm = window.confirm("¿Estás seguro que quieres eliminar este usuario?");
+        // if (!confirm) return;
+
+        try {
+            const res = await fetch(`${BASE_URL}/admin/deleteUser/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${cookies.token}`,
+                },
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+
+            // Actualizar lista de usuarios después de eliminar
+            setUsers(users.filter(user => user.user_id !== id));
+            
+            const decoded = jwtDecode(cookies.token);
+            const currentUserId = decoded.uid;
+            if (parseInt(id) === currentUserId) {
+                setCookie('token', '', { path: '/' });
+                alert('Has eliminado tu propio usuario. Debes iniciar sesión de nuevo con otro usuario.');
+                navigate('/login');
+            }
+            fetchStatistics();
+
+        } catch (error) {
+            console.error(error);
+            alert("No se pudo eliminar el usuario");
+        }
+    };
+
+    /**
+     * Navega a la página de edición de un usuario
+     *
+     * @function
+     * @inner
+     * @param {Object} user - Usuario a editar
+     */
+    const handleEdit = (user) => {
+        navigate(`/admin/editUser/${user.user_id}`);
+    };
+
+    /**
+     * Navega a la página de creación de un nuevo usuario
+     *
+     * @function
+     * @inner
+     */
+    const handleCreateUser = () => {
+        navigate(`/admin/createUser`)
+    };
+
+    useEffect(() => {
+        fetchUsers();
+        fetchStatistics()
+    }, [cookies.token]);
+
+    if (loadingUsers || loadingStats) return &lt;p>Cargando usuarios...&lt;/p>;
+    if (error) return &lt;p>{error}&lt;/p>;
+
+    return (
+    &lt;div className="admin-dashboard">
+        &lt;h2>Panel de Administración&lt;/h2>
+
+        &lt;LogoutButton/>
+
+        &lt;div className="estadisticas">
+            &lt;div className="stat-card">
+                &lt;h3>Total de usuarios:&lt;/h3>
+                &lt;p>{totalUsers}&lt;/p>
+            &lt;/div>
+            {usersByRole.map(role => (
+                &lt;div key={role.role_id} className="stat-card">
+                    &lt;h3>{role.role_name}:&lt;/h3>
+                    &lt;p>{role.total_users}&lt;/p>
+                &lt;/div>
+            ))}
+        &lt;/div>
+        &lt;div className="admin-create-user">
+        &lt;button className="btn-create-user" onClick={handleCreateUser}>
+            + Crear nuevo usuario
+        &lt;/button>
+        &lt;/div>
+        &lt;table className="users-table">
+            &lt;thead>
+            &lt;tr>
+                &lt;th>ID&lt;/th>
+                &lt;th>Nombre&lt;/th>
+                &lt;th>Email&lt;/th>
+                &lt;th>Rol&lt;/th>
+                &lt;th>Activo&lt;/th>
+                &lt;th>Creado en&lt;/th>
+                &lt;th>Acciones&lt;/th>
+            &lt;/tr>
+            &lt;/thead>
+            &lt;tbody>
+            {users.length === 0 ? (
+                &lt;tr>
+                &lt;td colSpan="7">No hay usuarios&lt;/td>
+                &lt;/tr>
+            ) : (
+                users.map(user => (
+                &lt;tr key={user.user_id}>
+                    &lt;td data-label="ID">{user.user_uuid}&lt;/td>
+                    &lt;td data-label="Nombre">{user.user_name}&lt;/td>
+                    &lt;td data-label="Email">{user.user_email}&lt;/td>
+                    &lt;td data-label="Rol">{user.role_name}&lt;/td>
+                    &lt;td data-label="Activo">{user.is_active ? 'Sí' : 'No'}&lt;/td>
+                    &lt;td data-label="Creando en">{new Date(user.user_created_at).toLocaleString()}&lt;/td>
+                    &lt;td data-label="Acciones">
+                    &lt;button onClick={() => handleEdit(user)}>Editar&lt;/button>
+                    &lt;button onClick={() => abrirVentanaModal(user)}>Eliminar&lt;/button>
+                    &lt;/td>
+                &lt;/tr>
+                ))
+            )}
+            &lt;/tbody>
+        &lt;/table>
+        {ventanaModal &amp;&amp; (
+        &lt;div className="modal-borrar">
+            &lt;div className="modal">
+                &lt;p>¿Estás seguro que quieres eliminar {borrarUsuario.user_name}?&lt;/p>
+                &lt;button onClick={confirmarBorrado}>Sí, eliminar&lt;/button>
+                &lt;button onClick={cerrarVentanaModal}>Cancelar&lt;/button>
+            &lt;/div>
+        &lt;/div>
+        )}
+    &lt;/div>
+);
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdminDashboard">AdminDashboard</a></li><li><a href="global.html#CreateAlertModal">CreateAlertModal</a></li><li><a href="global.html#CreateReport">CreateReport</a></li><li><a href="global.html#CreateUser">CreateUser</a></li><li><a href="global.html#CreateWork">CreateWork</a></li><li><a href="global.html#EditReport">EditReport</a></li><li><a href="global.html#EditUser">EditUser</a></li><li><a href="global.html#EditWork">EditWork</a></li><li><a href="global.html#LoginPage">LoginPage</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#OfficeDashboard">OfficeDashboard</a></li><li><a href="global.html#ProtectedRoute">ProtectedRoute</a></li><li><a href="global.html#ViewAlerts">ViewAlerts</a></li><li><a href="global.html#WorkerDashboard">WorkerDashboard</a></li><li><a href="global.html#WorkerWorkDetailed">WorkerWorkDetailed</a></li><li><a href="global.html#WorksMap">WorksMap</a></li><li><a href="global.html#fetchReport">fetchReport</a></li><li><a href="global.html#handleChange">handleChange</a></li><li><a href="global.html#handleSendAlert">handleSendAlert</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jan 13 2026 13:31:21 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/WorkerPages/EditReport.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/WorkerPages/EditReport.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router';
+import { useCookies } from 'react-cookie';
+import {jwtDecode} from "jwt-decode";
+import "../../css/EditReport.css";
+import "../../css/ModalErrorReporte.css"
+
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
+/**
+ * Componente EditReport
+ *
+ * Permite a un trabajador:
+ * - Visualizar un reporte existente
+ * - Editar las notas del reporte
+ * - Cambiar o subir una nueva imagen asociada
+ * - Manejar permisos (solo el propietario puede actualizar)
+ *
+ * @component
+ * @returns {JSX.Element} Formulario para editar un reporte
+ */
+export const EditReport = () => {
+    const { report_id } = useParams();
+    const [cookies] = useCookies(['token']);
+    const [form, setForm] = useState(null);
+    const navigate = useNavigate();
+
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
+
+
+    /**
+     * Trae los datos del reporte desde el backend usando el report_id
+     *
+     * @async
+     * @function fetchReport
+     * @throws {Error} Si no se puede obtener el reporte
+     * @updates form
+     */
+    const fetchReport = async () => {
+        try {
+            const res = await fetch(`${BASE_URL}/worker/getReportById/${report_id}`, {
+                headers: { Authorization: `Bearer ${cookies.token}` }
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            
+            setForm({
+                report_notes: data.data.report_notes,
+                imagen: data.data.report_photo_url,
+            });
+
+        } catch (error) {
+        console.log(error);
+        navigate('/worker/dashboard');
+        }
+    };
+
+    /**
+     * Actualiza el estado del formulario cuando cambian los campos
+     *
+     * @function handleChange
+     * @param {React.ChangeEvent&lt;HTMLInputElement|HTMLTextAreaElement>} ev - Evento de cambio del input o textarea
+     * @updates form
+     */
+    const handleChange = (ev) => {
+        const { name, value } = ev.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    /**
+     * Envía los cambios del reporte al backend
+     *
+     * @async
+     * @function handleSubmit
+     * @param {React.FormEvent&lt;HTMLFormElement>} ev - Evento submit del formulario
+     * @throws {Error} Si ocurre un error al actualizar
+     * @checks permisos - Muestra popup si el usuario no es el propietario
+     */
+    const handleSubmit = async (ev) => {
+        ev.preventDefault();
+        if (!form) return;
+        const decoded = jwtDecode(cookies.token);
+        const uid = decoded.uid;
+        try {
+            const formData = new FormData(ev.target); //Formulario (El texto que meta el worker y la imágen)
+            const res = await fetch(`${BASE_URL}/worker/updateReport/${report_id}/${uid}`, {
+                method: 'POST',
+                headers: {
+                Authorization: `Bearer ${cookies.token}`
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+            if (res.status === 403) {
+                setPopupMessage("No eres el propietario de este informe");
+                setShowPopup(true);
+                return;
+            }
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            navigate('/worker/dashboard');
+
+        } catch (error) {
+            console.log(error);
+            alert(error);
+        }
+    };
+    
+    useEffect(() => {
+        fetchReport();
+    }, [report_id, cookies.token]);
+    
+    if (!form) return &lt;p>Cargando reporte...&lt;/p>;
+
+    return (
+        &lt;div className="edit-report">
+        &lt;h2>Editar reporte: {report_id}&lt;/h2>
+        &lt;form onSubmit={handleSubmit} className="edit-report-form">
+            &lt;label htmlFor="report_notes">Informe&lt;/label>
+            &lt;textarea id="report_notes" name="report_notes" value={form.report_notes} onChange={handleChange} placeholder="Notas del reporte"/>
+            &lt;p className='current-image-title'>Imagen actual:&lt;/p>
+            {form.imagen &amp;&amp; (
+                    &lt;div className="current-image">
+                    &lt;img
+                        src={`${BASE_URL}/upload/${form.imagen}`}
+                        alt="Imagen del reporte"
+                    />
+                    &lt;/div>
+                )}
+
+            &lt;label htmlFor="imagen">Imagen del reporte:&lt;/label>
+            &lt;input type="file" id="imagen" name="imagen" accept="image/*">&lt;/input>
+
+            &lt;button type="submit">Guardar cambios&lt;/button>
+            &lt;button type="button" onClick={() => navigate('/worker/dashboard')}> Cancelar &lt;/button>
+        &lt;/form>
+        {showPopup &amp;&amp; (
+            &lt;div className="popup-overlay">
+                &lt;div className="popup">
+                    &lt;h3>Acción no permitida&lt;/h3>
+                    &lt;p>{popupMessage}&lt;/p>
+                    &lt;button onClick={() => setShowPopup(false)}>Cerrar&lt;/button>
+                &lt;/div>
+            &lt;/div>
+        )}
+        &lt;/div>
+    );
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdminDashboard">AdminDashboard</a></li><li><a href="global.html#CreateAlertModal">CreateAlertModal</a></li><li><a href="global.html#CreateReport">CreateReport</a></li><li><a href="global.html#CreateUser">CreateUser</a></li><li><a href="global.html#CreateWork">CreateWork</a></li><li><a href="global.html#EditReport">EditReport</a></li><li><a href="global.html#EditUser">EditUser</a></li><li><a href="global.html#EditWork">EditWork</a></li><li><a href="global.html#LoginPage">LoginPage</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#OfficeDashboard">OfficeDashboard</a></li><li><a href="global.html#ProtectedRoute">ProtectedRoute</a></li><li><a href="global.html#ViewAlerts">ViewAlerts</a></li><li><a href="global.html#WorkerDashboard">WorkerDashboard</a></li><li><a href="global.html#WorkerWorkDetailed">WorkerWorkDetailed</a></li><li><a href="global.html#WorksMap">WorksMap</a></li><li><a href="global.html#fetchReport">fetchReport</a></li><li><a href="global.html#handleChange">handleChange</a></li><li><a href="global.html#handleSendAlert">handleSendAlert</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jan 13 2026 13:31:21 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

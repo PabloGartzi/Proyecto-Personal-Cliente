@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/OfficePages/OfficeDashboard.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/OfficePages/OfficeDashboard.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router';
+import { LogoutButton } from '../../components/LogoutButton';
+import { CreateAlertModal } from '../../components/CreateAlertModal';
+import { jwtDecode } from 'jwt-decode';
+import { WorksMap } from '../WorksMap';
+import '../../css/ModalBorrar.css';
+
+const BASE_URL = import.meta.env.VITE_URL_BASE;
+
+/**
+ * Componente OfficeDashboard
+ *
+ * Panel de oficina que permite:
+ * - Ver todos los trabajos asignados
+ * - Ver estadísticas de trabajos (total, pendientes, en curso, completados)
+ * - Crear, editar y eliminar trabajos
+ * - Filtrar trabajos por título, email, fecha o estado
+ * - Descargar reportes PDF de los trabajos
+ * - Crear alertas mediante un modal
+ *
+ * @component
+ * @returns {JSX.Element} Componente del panel de oficina
+ */
+export const OfficeDashboard = () => {
+    const navigate = useNavigate();
+    const [works, setWorks] = useState([]);
+    const [loadingWorks, setLoadingWorks] = useState(true);
+    const [loadingStats, setLoadingStats] = useState(true);
+
+    const [error, setError] = useState(null);
+    const [cookies] = useCookies(['token']);
+
+    const [totalWorks, setTotalWorks] = useState(0);
+    const [worksPending, setWorksPending] = useState(0);
+    const [worksInProgress, setWorksInProgress] = useState(0);
+    const [worksCompleted, setWorksCompleted] = useState(0);
+
+    const [ventanaModal, setVentanaModal] = useState(false);
+    const [borrarWork, setBorrarWork] = useState(null);
+
+    const [busquedaTitulo, setBusquedaTitulo] = useState("");
+    const [busquedaEmail, setBusquedaEmail] = useState("");
+    const [busquedaFecha, setBusquedaFecha] = useState("");
+    const [busquedaEstado, setBusquedaEstado] = useState("");
+
+    const [showAlertModal, setShowAlertModal] = useState(false);
+
+
+    /**
+     * Abre la ventana modal para confirmar eliminación de un trabajo
+     *
+     * @function
+     * @inner
+     * @param {Object} work - Trabajo a eliminar
+     */
+    const abrirVentanaModal = (work) => {
+        setBorrarWork(work);
+        setVentanaModal(true);
+    };
+
+
+    /**
+     * Cierra la ventana modal de eliminación de trabajo
+     *
+     * @function
+     * @inner
+     */
+    const cerrarVentanaModal = () => {
+        setBorrarWork(null);
+        setVentanaModal(false);
+    };
+
+    /**
+     * Confirma la eliminación de un trabajo
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const confirmarBorrado = async () => {
+        if (!borrarWork) return;
+        await handleDelete(borrarWork.job_id);
+        cerrarVentanaModal();
+    };
+
+    /**
+     * Obtiene estadísticas de los trabajos desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const fetchStatistics = async () => {
+        try {
+        const res = await fetch(`${BASE_URL}/office/statistics`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${cookies.token}`,
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error('Error al obtener usuarios');
+        }
+
+        const data = await res.json();
+        
+        setTotalWorks(data.data.total_works)
+        setWorksPending(data.data.works_pending)
+        setWorksInProgress(data.data.works_in_progress)
+        setWorksCompleted(data.data.works_completed)
+
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        } finally {
+            setLoadingStats(false);
+        }
+    };
+
+    /**
+     * Obtiene todos los trabajos desde el backend
+     *
+     * @function
+     * @inner
+     * @async
+     */
+    const fetchWorks = async () => {
+        try {
+            const res = await fetch(`${BASE_URL}/office/dashboard`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${cookies.token}`,
+                },
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+
+            setWorks(data.data);
+            console.log(data.data)
+
+        } catch (error) {
+            console.error(error);
+            setError(error);
+        } finally {
+            setLoadingWorks(false);
+        }
+    };
+
+    /**
+     * Elimina un trabajo por su ID
+     *
+     * @function
+     * @inner
+     * @param {number|string} id - ID del trabajo a eliminar
+     * @async
+     */
+    const handleDelete = async (id) => {
+        try {
+            const res = await fetch(`${BASE_URL}/office/deleteWork/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${cookies.token}`,
+                },
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+
+            setWorks(prev => prev.filter(work => work.job_id !== id));
+            fetchStatistics();
+
+        } catch (err) {
+            console.error(err);
+            alert(err.message);
+        }
+    };
+
+    /**
+     * Navega a la página de edición de un trabajo
+     *
+     * @function
+     * @inner
+     * @param {Object} work - Trabajo a editar
+     */
+    const handleEdit = (work) => {
+        navigate(`/office/editWork/${work.job_id}`);
+    };
+
+    /**
+     * Navega a la página de creación de un nuevo trabajo
+     *
+     * @function
+     * @inner
+     */
+    const handleCreateWork = () => {
+        navigate('/office/createWork');
+    };
+
+    /**
+     * Descarga los reportes PDF de un trabajo
+     *
+     * @function
+     * @inner
+     * @param {number|string} id - ID del trabajo
+     * @async
+     */
+    const handleReports = async (id) => {
+        try {
+            const res = await fetch(
+                `${BASE_URL}/worker/workReport/${id}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${cookies.token}`,
+                    },
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error(data.msg);
+            }
+            
+            const blob = await res.blob();// Convertimos la respuesta en un Blob
+            const url = window.URL.createObjectURL(blob); // Creamos una URL temporal
+            const a = document.createElement("a");// Creamos un enlace para descargar el pdf de la url que hemos creado
+            a.href = url;
+            a.download = `reportes_trabajo_${id}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();// Borramos en elnace una vez lo hemos usado para descargar el pdf
+            window.URL.revokeObjectURL(url);
+            // navigate('/worker/dashboard');
+
+        } catch (error) {
+            console.log("ERROR:", error)
+            alert(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchWorks();
+        fetchStatistics();
+    }, [cookies.token]);
+
+    const trabajosFiltrados = works.filter(work => 
+        `${work.assigned_worker_user_email}`
+            .toLowerCase()
+            .includes(busquedaEmail.toLowerCase().trim())
+        &amp;&amp;
+        `${work.job_title}`
+            .toLowerCase()
+            .includes(busquedaTitulo.toLowerCase().trim())
+        &amp;&amp;
+        `${new Date(work.job_created_at).toLocaleString()}`
+            .toLowerCase()
+            .includes(busquedaFecha.toLowerCase().trim())
+        &amp;&amp;
+        `${work.job_status}`
+            .toLowerCase()
+            .includes(busquedaEstado.toLowerCase().trim())
+    );
+
+    if (loadingWorks || loadingStats) return &lt;p>Cargando trabajos...&lt;/p>;
+    if (error) return &lt;p>{error}&lt;/p>;
+
+    return (
+        &lt;div className="office-dashboard">
+            &lt;h2>Panel de Oficina&lt;/h2>
+            &lt;LogoutButton />
+
+            &lt;div className="estadisticas">
+                &lt;div className="stat-card">
+                    &lt;h3>Total de trabajos:&lt;/h3>
+                    &lt;p>{totalWorks}&lt;/p>
+                &lt;/div>
+                &lt;div className="stat-card">
+                    &lt;h3>Trabajos pendientes:&lt;/h3>
+                    &lt;p>{worksPending}&lt;/p>
+                &lt;/div>
+                &lt;div className="stat-card">
+                    &lt;h3>Trabajos en curso:&lt;/h3>
+                    &lt;p>{worksInProgress}&lt;/p>
+                &lt;/div>
+                &lt;div className="stat-card">
+                    &lt;h3>Trabajos completados:&lt;/h3>
+                    &lt;p>{worksCompleted}&lt;/p>
+                &lt;/div>
+            &lt;/div>
+            &lt;div className="office-create-alert">
+                &lt;button className="btn-create-alert" onClick={() => setShowAlertModal(true)}>
+                    + Crear alerta
+                &lt;/button>
+            &lt;/div>
+            &lt;div className="office-create-work">
+                &lt;button className="btn-create-work" onClick={handleCreateWork}>
+                    + Crear nuevo trabajo
+                &lt;/button>
+            &lt;/div>
+            &lt;div className="office-search">
+                &lt;input type="text" placeholder="Filtrar por titulo" value={busquedaTitulo} onChange={(e) => setBusquedaTitulo(e.target.value)} />
+                &lt;input type="text" placeholder="Filtrar por email" value={busquedaEmail} onChange={(e) => setBusquedaEmail(e.target.value)} />
+                &lt;input type="text" placeholder="Filtrar por fecha" value={busquedaFecha} onChange={(e) => setBusquedaFecha(e.target.value)} />
+                &lt;select name="job_status" onChange={(e) => setBusquedaEstado(e.target.value)}>
+                    &lt;option value="">No filtrar&lt;/option>
+                    &lt;option value="pendiente">pendiente&lt;/option>
+                    &lt;option value="en curso">en curso&lt;/option>
+                    &lt;option value="completado">completado&lt;/option>
+                &lt;/select>
+            &lt;/div>
+            &lt;table className="works-table">
+                &lt;thead>
+                    &lt;tr>
+                        &lt;th>ID&lt;/th>
+                        &lt;th>Título&lt;/th>
+                        &lt;th>Descripción&lt;/th>
+                        &lt;th>Estado&lt;/th>
+                        &lt;th>Dirección&lt;/th>
+                        &lt;th>Latitud&lt;/th>
+                        &lt;th>Longitud&lt;/th>
+                        &lt;th>Asignado a (email)&lt;/th>
+                        &lt;th>Creado en&lt;/th>
+                        &lt;th>Acciones&lt;/th>
+                    &lt;/tr>
+                &lt;/thead>
+                &lt;tbody>
+                    {trabajosFiltrados.length == 0 ? (
+                        &lt;tr>
+                            &lt;td colSpan="10">No hay trabajos&lt;/td>
+                        &lt;/tr>
+                    ) : (
+                        trabajosFiltrados.map(work => (
+                            &lt;tr key={work.job_id}>
+                                &lt;td data-label="ID">{work.job_uuid}&lt;/td>
+                                &lt;td data-label="Título">{work.job_title}&lt;/td>
+                                &lt;td data-label="Descripción">{work.job_description}&lt;/td>
+                                &lt;td data-label="Estado">{work.job_status}&lt;/td>
+                                &lt;td data-label="Dirección">{work.job_address}&lt;/td>
+                                &lt;td data-label="Latitud">{work.job_latitude}&lt;/td>
+                                &lt;td data-label="Longitud">{work.job_longitude}&lt;/td>
+                                &lt;td data-label="Asignado a">{work.assigned_worker_user_email || '-'}&lt;/td>
+                                &lt;td data-label="Creado en">{new Date(work.job_created_at).toLocaleString()}&lt;/td>
+                                &lt;td data-label="Acciones">
+                                    &lt;button onClick={() => handleEdit(work)}>Editar&lt;/button>
+                                    &lt;button onClick={() => abrirVentanaModal(work)}>Eliminar&lt;/button>
+                                    &lt;button onClick={() => handleReports(work.job_id)}>Descargar Reportes&lt;/button>
+                                &lt;/td>
+                            &lt;/tr>
+                        ))
+                    )}
+                &lt;/tbody>
+            &lt;/table>
+
+            &lt;h3 className='titulo-mapa'>Mapa de trabajos&lt;/h3>
+            &lt;WorksMap works={trabajosFiltrados} />
+
+            {ventanaModal &amp;&amp; (
+                &lt;div className="modal-borrar">
+                    &lt;div className="modal">
+                        &lt;p>¿Estás seguro que quieres eliminar "{borrarWork.job_title}"?&lt;/p>
+                        &lt;button onClick={confirmarBorrado}>Sí, eliminar&lt;/button>
+                        &lt;button onClick={cerrarVentanaModal}>Cancelar&lt;/button>
+                    &lt;/div>
+                &lt;/div>
+            )}
+            &lt; CreateAlertModal isOpen={showAlertModal} onClose={() => setShowAlertModal(false)} token={cookies.token}/>
+        &lt;/div>
+    );
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AdminDashboard">AdminDashboard</a></li><li><a href="global.html#CreateAlertModal">CreateAlertModal</a></li><li><a href="global.html#CreateReport">CreateReport</a></li><li><a href="global.html#CreateUser">CreateUser</a></li><li><a href="global.html#CreateWork">CreateWork</a></li><li><a href="global.html#EditReport">EditReport</a></li><li><a href="global.html#EditUser">EditUser</a></li><li><a href="global.html#EditWork">EditWork</a></li><li><a href="global.html#LoginPage">LoginPage</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#OfficeDashboard">OfficeDashboard</a></li><li><a href="global.html#ProtectedRoute">ProtectedRoute</a></li><li><a href="global.html#ViewAlerts">ViewAlerts</a></li><li><a href="global.html#WorkerDashboard">WorkerDashboard</a></li><li><a href="global.html#WorkerWorkDetailed">WorkerWorkDetailed</a></li><li><a href="global.html#WorksMap">WorksMap</a></li><li><a href="global.html#fetchReport">fetchReport</a></li><li><a href="global.html#handleChange">handleChange</a></li><li><a href="global.html#handleSendAlert">handleSendAlert</a></li><li><a href="global.html#handleSubmit">handleSubmit</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue Jan 13 2026 13:31:21 GMT+0100 (hora estándar de Europa central)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
